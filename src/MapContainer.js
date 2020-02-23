@@ -3,8 +3,15 @@ import axios from 'axios';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
-const apiUrl = "http://127.0.0.1:5000/";
-const predsApi = apiUrl + "api/predictions"
+var API_URL = "";
+if (process.env.NODE_ENV=="production")
+{
+  API_URL = "http://flask-env.hnihdvppuy.us-west-2.elasticbeanstalk.com";
+} else {
+  API_URL = "http://localhost:5000";
+}
+
+const predsApi = API_URL + "/api/predictions"
 
 class MapContainer extends React.Component {
   constructor(props) {
