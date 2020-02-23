@@ -4,8 +4,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 1. Clone this repo to your machine
 2. Install node.js: https://nodejs.org/en/download/. Node.js is the development server we'll use to run the React app locally, and it comes with npm (Node Package Manager), which we use to download/install packages and run our development environment.
 3. Via your command prompt/terminal, navigate into the repository and run `npm install`. This command looks at the package.json file and installs all the dependencies into the environment.
-4.  Run `npm start`. This starts up the development server, usually on localhost:3000. Once this loads, you should see the application on your browser
-5. If you don't also have the local Django server running, do that now, following THESE instructions. TODO add instructions. If you want to develop against the production backend ADD INSTRUCTIONS for that.
+4. Run `npm start`. This starts up the development server, usually on localhost:3000. Once this loads, you should see the application on your browser
+5. If you don't also have the local Flask server running, do that now, as described here: https://github.com/w210-accessibility/app-back-end. You can also sub in the production URL for the apiUrl variable if you want to hit the production URL instead of your development server. 
 6. To make changes to the React application, open the project code (under 'src' directory) in your favorite text editor. When you save changes, the site will "hot reload" automatically in your browser and you should see your changes right away.
 7. Not strictly necessary but highly recommended: download React extension to Chrome Developer Tools for a better in-browser debugging experience. https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en
 

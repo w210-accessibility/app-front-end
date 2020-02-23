@@ -1,6 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 
+//CHANGE locally if you want to hit production server Instead
+// TODO: change this to read froma config file
+const apiUrl = "http://127.0.0.1:5000/";
+const predsApi = apiUrl + "api/predictions"
+
 class MapContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -12,7 +17,7 @@ class MapContainer extends React.Component {
   }
 
   componentDidMount() {
-    var req = "http://django-env.ypqvuifmir.us-west-2.elasticbeanstalk.com/predictions/?lat1=" + this.state.lat1 + "&long1=" + this.state.long1
+    var req = predsApi + "?" + this.state.lat1 + "&long1=" + this.state.long1
                + "&lat2=" + this.state.lat2 + "&long2=" + this.state.long2;
 
     axios.get(req)
