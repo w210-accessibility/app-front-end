@@ -12,12 +12,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 6. To make changes to the React application, open the project code (under 'src' directory) in your favorite text editor. When you save changes, the site will "hot reload" automatically in your browser and you should see your changes right away.
 7. Not strictly necessary but highly recommended: download React extension to Chrome Developer Tools for a better in-browser debugging experience. https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en
 8. Commit and push all new code to a feature branch:
-⋅⋅* `git checkout -b <your-branch-name>` the first time you want to create it
-⋅⋅* `git checkout <your-branch-name>` if it's already created and you want to check it out later
-⋅⋅* `git status` to see what you have edited
-⋅⋅* `git add <file name>` for every file you want to commit
-⋅⋅* `git commit -m <your-message>` to commit a set of files along with a descriptive message of what you did
-⋅⋅* `git push origin <your-branch-name>` to push that feature branch
+  * `git checkout -b <your-branch-name>` the first time you want to create it
+  * `git checkout <your-branch-name>` if it's already created and you want to check it out later
+  * `git status` to see what you have edited
+  * `git add <file name>` for every file you want to commit
+  * `git commit -m <your-message>` to commit a set of files along with a descriptive message of what you did
+  * `git push origin <your-branch-name>` to push that feature branch
 9. Open a new pull request on github when you want to merge it in.
 
 ## Deployment Instructions
