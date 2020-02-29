@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import ReactMapboxGl, { Layer, Feature, ZoomControl } from 'react-mapbox-gl';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -11,49 +12,50 @@ if (process.env.NODE_ENV=="production")
   API_URL = "http://localhost:5000";
 }
 
-const predsApi = API_URL + "/api/predictions"
+const predsApi = API_URL + "/api/predictions";
+
+const MILWAUKEE_CENTER = [-87.9065, 43.0389];
+const MILWAUKEE_BOUNDS = [[-88, 43],[-87.8, 43.05]];
+
+const Map = ReactMapboxGl({
+  accessToken:
+    'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg'
+});
 
 class MapContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {lat1: -20,
-                  long1: -20,
-                  lat2: 20,
-                  long2: 20,
-                  predictions: []};
+    this.state = { circleLoc: MILWAUKEE_CENTER,
+                   zoom: 15};
   }
 
-  componentDidMount() {
-    var req = predsApi + "?" + this.state.lat1 + "&long1=" + this.state.long1
-               + "&lat2=" + this.state.lat2 + "&long2=" + this.state.long2;
+  handleMove = () => {
+    var currCircleLocX = this.state.circleLoc[0] - .001;
+    this.setState({ circleLoc: [currCircleLocX, 43.0389]});
+  }
 
-    axios.get(req)
-      .then(res => {
-        const preds = res.data.preds;
-        var predsToShow = []
-        preds.forEach(function(pred){
-          predsToShow.push("(" + pred.latitude + ", " + pred.longitude +
-                          "), label: " + pred.label + "      ")
-        })
-        this.setState({ predictions: predsToShow });
-      })
+  handleZoom = (m) => {
+    this.setState({ zoom: m.getZoom()})
   }
 
   render() {
-    return <div className="mapcontainer">
-              <h1>This is the MapContainer component</h1>
-              <p>Input lat/long:({this.state.lat1}, {this.state.long1}),
-                                ({this.state.lat2}, {this.state.long2})</p>
-              <div>
-                <p>Response:</p>
-                <p>Number of responses: {this.state.predictions.length}</p>
-                <div>
-                  {this.state.predictions.map(entry => {
-                    return <p>{entry}</p>
-                  })}
-                </div>
-              </div>
-           </div>
+    return <Map
+            style="mapbox://styles/mapbox/streets-v9"
+            containerStyle={{
+              height: '100vh',
+              width: '100vw'
+            }}
+            center={MILWAUKEE_CENTER}
+            zoom={[this.state.zoom]}
+            maxBounds={MILWAUKEE_BOUNDS}
+            onMoveEnd = {this.handleMove}
+            onZoomEnd = {this.handleZoom}
+            >
+              <ZoomControl/>
+              <Layer type="circle" id="marker" paint={{"circle-radius": 30}}>
+                <Feature coordinates={this.state.circleLoc} />
+              </Layer>
+           </Map>
   }
 }
 
