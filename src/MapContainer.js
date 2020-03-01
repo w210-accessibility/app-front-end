@@ -15,9 +15,10 @@ if (process.env.NODE_ENV=="production")
 const predsApi = API_URL + "/api/predictions";
 
 const MILWAUKEE_CENTER = [-87.9065, 43.0389];
-const MILWAUKEE_BOUNDS = [[-88, 43],[-87.8, 43.05]];
+const MILWAUKEE_BOUNDS = [[-88.07094, 42.9208],[-87.863, 43.1947]];
 
 const Map = ReactMapboxGl({
+  //todo: hide this token in a config
   accessToken:
     'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg'
 });
@@ -42,8 +43,8 @@ class MapContainer extends React.Component {
     return <Map
             style="mapbox://styles/mapbox/streets-v9"
             containerStyle={{
-              height: '100vh',
-              width: '100vw'
+              height: '98vh',
+              width: '98vw'
             }}
             center={MILWAUKEE_CENTER}
             zoom={[this.state.zoom]}
