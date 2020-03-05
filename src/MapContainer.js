@@ -31,7 +31,19 @@ class MapContainer extends React.Component {
     super(props);
     this.state = { circleLoc: MILWAUKEE_CENTER,
                    zoom: 15,
-                   geoJson: {"bbox": [-87.97759552015516, 43.03983160295481, -87.97532666935352, 43.03984560257128], "type": "FeatureCollection", "features": [{"id": "0", "bbox": [-87.97759552015516, 43.03983160295481, -87.97532666935352, 43.03984560257128], "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-87.97532666935352, 43.03983160295481], [-87.9757795950501, 43.039833603021016], [-87.97714151976831, 43.03984260245887], [-87.97714151976831, 43.03984260245887], [-87.97759552015516, 43.03984560257128]]}, "properties": {}}]}};
+                   geoJson: {"missing_sidewalk": [],
+                             "sidewalk_issues": []}};
+  }
+
+  componentDidMount() {
+    var req = predsApi + "?lat1=" + MILWAUKEE_BOUNDS[0][1] + "&long1=" + MILWAUKEE_BOUNDS[0][0]
+               + "&lat2=" + MILWAUKEE_BOUNDS[1][1] + "&long2=" + MILWAUKEE_BOUNDS[1][0];
+
+    axios.get(req)
+      .then(res => {
+        this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
+                                  "sidewalk_issues": res.data.sidewalk_issues} });
+      })
   }
 
   handleMove = (m) => {
@@ -42,17 +54,17 @@ class MapContainer extends React.Component {
     this.setState({ zoom: m.getZoom()})
   }
 
+  //TODO this is at lesat temporarily deprecated
   getData = (m) => {
     var newBounds = m.getBounds().toArray();
-    console.log(newBounds);
     var req = predsApi + "?lat1=" + newBounds[0][1] + "&long1=" + newBounds[0][0]
                + "&lat2=" + newBounds[1][1] + "&long2=" + newBounds[1][0];
 
     axios.get(req)
       .then(res => {
-        var results = res.data;
-        console.log(results)
-        this.setState({ geoJson: results });
+        var features = res.data.features;
+        features.map((f) => console.log(f));
+        this.setState({ geoJson: {"features": features} });
       })
   }
 
@@ -69,9 +81,22 @@ class MapContainer extends React.Component {
             onMoveEnd = {this.handleMove}
             onZoomEnd = {this.handleZoom}>
               <ZoomControl/>
-              <Layer type="line" id="sidewalk" paint={{"line-width": 3, "line-color": '#bc13fe'}}>
-                <Feature coordinates={this.state.geoJson.features[0].geometry.coordinates} />
-              </Layer>
+               <Layer type="line" id="missing_sidewalk" paint={{"line-width": 3, "line-color": '#FF0000'}}>
+               {
+                 //TODO: add key=id once the features have unique ids
+                 this.state.geoJson.missing_sidewalk.map((f) => (
+                   <Feature coordinates={f.geometry.coordinates} />
+                 ))
+               }
+               </Layer>
+               <Layer type="line" id="sidewalk_issues" paint={{"line-width": 3, "line-color": '#FFFF00'}}>
+               {
+                 //TODO: add key=id once the features have unique ids
+                 this.state.geoJson.sidewalk_issues.map((f) => (
+                   <Feature coordinates={f.geometry.coordinates} />
+                 ))
+               }
+               </Layer>
            </Map>
   }
 }
