@@ -1,6 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-import ReactMapboxGl, { Layer, Feature, ZoomControl } from 'react-mapbox-gl';
+import ReactMapboxGl, { Layer,
+                        Feature,
+                        ZoomControl,
+                        GeoJSONLayer } from 'react-mapbox-gl';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -27,16 +30,42 @@ class MapContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = { circleLoc: MILWAUKEE_CENTER,
-                   zoom: 15};
+                   zoom: 15,
+                   geoJson: {"missing_sidewalk": [],
+                             "sidewalk_issues": []}};
   }
 
-  handleMove = () => {
-    var currCircleLocX = this.state.circleLoc[0] - .001;
-    this.setState({ circleLoc: [currCircleLocX, 43.0389]});
+  componentDidMount() {
+    var req = predsApi + "?lat1=" + MILWAUKEE_BOUNDS[0][1] + "&long1=" + MILWAUKEE_BOUNDS[0][0]
+               + "&lat2=" + MILWAUKEE_BOUNDS[1][1] + "&long2=" + MILWAUKEE_BOUNDS[1][0];
+
+    axios.get(req)
+      .then(res => {
+        this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
+                                  "sidewalk_issues": res.data.sidewalk_issues} });
+      })
+  }
+
+  handleMove = (m) => {
+    //this.getData(m)
   }
 
   handleZoom = (m) => {
     this.setState({ zoom: m.getZoom()})
+  }
+
+  //TODO this is at lesat temporarily deprecated
+  getData = (m) => {
+    var newBounds = m.getBounds().toArray();
+    var req = predsApi + "?lat1=" + newBounds[0][1] + "&long1=" + newBounds[0][0]
+               + "&lat2=" + newBounds[1][1] + "&long2=" + newBounds[1][0];
+
+    axios.get(req)
+      .then(res => {
+        var features = res.data.features;
+        features.map((f) => console.log(f));
+        this.setState({ geoJson: {"features": features} });
+      })
   }
 
   render() {
@@ -48,14 +77,26 @@ class MapContainer extends React.Component {
             }}
             center={MILWAUKEE_CENTER}
             zoom={[this.state.zoom]}
-            maxBounds={MILWAUKEE_BOUNDS}
+            maxBounds = {MILWAUKEE_BOUNDS}
             onMoveEnd = {this.handleMove}
-            onZoomEnd = {this.handleZoom}
-            >
+            onZoomEnd = {this.handleZoom}>
               <ZoomControl/>
-              <Layer type="circle" id="marker" paint={{"circle-radius": 30}}>
-                <Feature coordinates={this.state.circleLoc} />
-              </Layer>
+               <Layer type="line" id="missing_sidewalk" paint={{"line-width": 3, "line-color": '#FF0000'}}>
+               {
+                 //TODO: add key=id once the features have unique ids
+                 this.state.geoJson.missing_sidewalk.map((f) => (
+                   <Feature coordinates={f.geometry.coordinates} />
+                 ))
+               }
+               </Layer>
+               <Layer type="line" id="sidewalk_issues" paint={{"line-width": 3, "line-color": '#FFFF00'}}>
+               {
+                 //TODO: add key=id once the features have unique ids
+                 this.state.geoJson.sidewalk_issues.map((f) => (
+                   <Feature coordinates={f.geometry.coordinates} />
+                 ))
+               }
+               </Layer>
            </Map>
   }
 }
