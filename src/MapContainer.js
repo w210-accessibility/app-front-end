@@ -70,7 +70,7 @@ class MapContainer extends React.Component {
 
   render() {
     return <Map
-            style="mapbox://styles/mapbox/streets-v9"
+            style="mapbox://styles/mapbox/basic-v9"
             containerStyle={{
               height: '98vh',
               width: '98vw'
@@ -81,7 +81,7 @@ class MapContainer extends React.Component {
             onMoveEnd = {this.handleMove}
             onZoomEnd = {this.handleZoom}>
               <ZoomControl/>
-               <Layer type="line" id="missing_sidewalk" paint={{"line-width": 3, "line-color": '#FF0000'}}>
+               <Layer type="line" id="missing_sidewalk" paint={{"line-width": 4, "line-color": '#FF0000'}}>
                {
                  //TODO: add key=id once the features have unique ids
                  this.state.geoJson.missing_sidewalk.map((f) => (
@@ -89,7 +89,7 @@ class MapContainer extends React.Component {
                  ))
                }
                </Layer>
-               <Layer type="line" id="sidewalk_issues" paint={{"line-width": 3, "line-color": '#FFFF00'}}>
+               <Layer type="line" id="sidewalk_issues" paint={{"line-width": 4, "line-color": '#FFFF00'}}>
                {
                  //TODO: add key=id once the features have unique ids
                  this.state.geoJson.sidewalk_issues.map((f) => (
