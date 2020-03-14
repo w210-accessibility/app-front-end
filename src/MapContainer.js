@@ -4,6 +4,7 @@ import ReactMapboxGl, { Layer,
                         Feature,
                         ZoomControl,
                         GeoJSONLayer } from 'react-mapbox-gl';
+import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -20,7 +21,7 @@ const predsApi = API_URL + "/api/predictions";
 const MILWAUKEE_CENTER = [-87.9065, 43.0389];
 const MILWAUKEE_BOUNDS = [[-88.07094, 42.9208],[-87.863, 43.1947]];
 
-const Map = ReactMapboxGl({
+const MapBoxMap = ReactMapboxGl({
   //todo: hide this token in a config
   accessToken:
     'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg'
@@ -68,8 +69,17 @@ class MapContainer extends React.Component {
       })
   }
 
+  onMapLoad = (map) => {
+    map.addControl(
+      new MapboxGeocoder({
+        accessToken: 'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg',
+        bbox: [-88.07094, 42.920,-87.863, 43.1947]
+      })
+    );
+  };
+
   render() {
-    return <Map
+    return (<MapBoxMap
             style="mapbox://styles/mapbox/basic-v9"
             containerStyle={{
               height: '98vh',
@@ -79,7 +89,8 @@ class MapContainer extends React.Component {
             zoom={[this.state.zoom]}
             maxBounds = {MILWAUKEE_BOUNDS}
             onMoveEnd = {this.handleMove}
-            onZoomEnd = {this.handleZoom}>
+            onZoomEnd = {this.handleZoom}
+            onStyleLoad = {this.onMapLoad}>
               <ZoomControl/>
                <Layer type="line" id="missing_sidewalk" paint={{"line-width": 4, "line-color": '#FF0000'}}>
                {
@@ -97,7 +108,7 @@ class MapContainer extends React.Component {
                  ))
                }
                </Layer>
-           </Map>
+           </MapBoxMap>)
   }
 }
 
