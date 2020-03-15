@@ -4,6 +4,7 @@ import ReactMapboxGl, { Layer,
                         Feature,
                         ZoomControl,
                         GeoJSONLayer } from 'react-mapbox-gl';
+import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -18,9 +19,9 @@ if (process.env.NODE_ENV=="production")
 const predsApi = API_URL + "/api/predictions";
 
 const MILWAUKEE_CENTER = [-87.9065, 43.0389];
-const MILWAUKEE_BOUNDS = [[-88.07094, 42.9208],[-87.863, 43.1947]];
+const MILWAUKEE_BOUNDS = [[-89, 42],[-87, 44]];
 
-const Map = ReactMapboxGl({
+const MapBoxMap = ReactMapboxGl({
   //todo: hide this token in a config
   accessToken:
     'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg'
@@ -32,7 +33,8 @@ class MapContainer extends React.Component {
     this.state = { circleLoc: MILWAUKEE_CENTER,
                    zoom: 15,
                    geoJson: {"missing_sidewalk": [],
-                             "sidewalk_issues": []}};
+                             "sidewalk_issues": []},
+                   noncity: []};
   }
 
   componentDidMount() {
@@ -44,6 +46,11 @@ class MapContainer extends React.Component {
         this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
                                   "sidewalk_issues": res.data.sidewalk_issues} });
       })
+
+    axios.get('non-city.geojson')
+    .then(res => {
+      this.setState({ noncity: res.data.features})
+    })
   }
 
   handleMove = (m) => {
@@ -68,9 +75,18 @@ class MapContainer extends React.Component {
       })
   }
 
+  onMapLoad = (map) => {
+    map.addControl(
+      new MapboxGeocoder({
+        accessToken: 'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg',
+        bbox: [-88.07094, 42.920,-87.863, 43.1947]
+      })
+    );
+  };
+
   render() {
-    return <Map
-            style="mapbox://styles/mapbox/streets-v9"
+    return (<MapBoxMap
+            style="mapbox://styles/mapbox/basic-v9"
             containerStyle={{
               height: '98vh',
               width: '98vw'
@@ -79,9 +95,10 @@ class MapContainer extends React.Component {
             zoom={[this.state.zoom]}
             maxBounds = {MILWAUKEE_BOUNDS}
             onMoveEnd = {this.handleMove}
-            onZoomEnd = {this.handleZoom}>
-              <ZoomControl/>
-               <Layer type="line" id="missing_sidewalk" paint={{"line-width": 3, "line-color": '#FF0000'}}>
+            onZoomEnd = {this.handleZoom}
+            onStyleLoad = {this.onMapLoad}>
+              <ZoomControl position="bottom-right"/>
+               <Layer type="line" id="missing_sidewalk" paint={{"line-width": 4, "line-color": '#FF0000'}}>
                {
                  //TODO: add key=id once the features have unique ids
                  this.state.geoJson.missing_sidewalk.map((f) => (
@@ -89,7 +106,7 @@ class MapContainer extends React.Component {
                  ))
                }
                </Layer>
-               <Layer type="line" id="sidewalk_issues" paint={{"line-width": 3, "line-color": '#FFFF00'}}>
+               <Layer type="line" id="sidewalk_issues" paint={{"line-width": 4, "line-color": '#FFFF00'}}>
                {
                  //TODO: add key=id once the features have unique ids
                  this.state.geoJson.sidewalk_issues.map((f) => (
@@ -97,7 +114,14 @@ class MapContainer extends React.Component {
                  ))
                }
                </Layer>
-           </Map>
+               <Layer type="fill" id="noncity" paint={{"fill-color": "#808080", "fill-opacity": .5}}>
+                 {
+                   this.state.noncity.map((f) => (
+                     <Feature coordinates={f.geometry.coordinates} />
+                   ))
+                 }
+               </Layer>
+           </MapBoxMap>)
   }
 }
 

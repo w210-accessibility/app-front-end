@@ -6,3 +6,7 @@
   outline: 1px solid red;
   width: 500px;
 }
+
+.mapboxgl-ctrl-group {
+    width: 30px;
+}
