@@ -5,6 +5,7 @@ import ReactMapboxGl, { Layer,
                         ZoomControl,
                         GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import mapboxgl from 'mapbox-gl'
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -34,7 +35,8 @@ class MapContainer extends React.Component {
                    zoom: 15,
                    geoJson: {"missing_sidewalk": [],
                              "sidewalk_issues": []},
-                   noncity: []};
+                   noncity: [],
+                   searchInput: ""};
   }
 
   componentDidMount() {
@@ -54,34 +56,29 @@ class MapContainer extends React.Component {
   }
 
   handleMove = (m) => {
-    //this.getData(m)
+    // don't really need this but keeping it around as a reminder of what's in m
+    // var input = m._controls[2].inputString;
+    // if (input !== this.state.searchInput)
+    // {
+    //   this.setState({searchInput: input});
+    // }
+    // var a = 1;
   }
 
   handleZoom = (m) => {
     this.setState({ zoom: m.getZoom()})
   }
 
-  //TODO this is at lesat temporarily deprecated
-  getData = (m) => {
-    var newBounds = m.getBounds().toArray();
-    var req = predsApi + "?lat1=" + newBounds[0][1] + "&long1=" + newBounds[0][0]
-               + "&lat2=" + newBounds[1][1] + "&long2=" + newBounds[1][0];
-
-    axios.get(req)
-      .then(res => {
-        var features = res.data.features;
-        features.map((f) => console.log(f));
-        this.setState({ geoJson: {"features": features} });
-      })
-  }
-
   onMapLoad = (map) => {
-    map.addControl(
-      new MapboxGeocoder({
-        accessToken: 'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg',
-        bbox: [-88.07094, 42.920,-87.863, 43.1947]
-      })
-    );
+    var geoCoder = new MapboxGeocoder({
+                                        accessToken: 'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg',
+                                        bbox: [-88.07094, 42.920,-87.863, 43.1947],
+                                        marker: {
+                                          color: 'purple'
+                                          },
+                                        mapboxgl: mapboxgl,
+    })
+    map.addControl(geoCoder);
   };
 
   render() {
