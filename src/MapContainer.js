@@ -34,7 +34,8 @@ class MapContainer extends React.Component {
     this.state = { circleLoc: MILWAUKEE_CENTER,
                    zoom: 15,
                    geoJson: {"missing_sidewalk": [],
-                             "sidewalk_issues": []},
+                             "sidewalk_issues": [],
+                             "passable_sidewalks": []},
                    noncity: [],
                    searchInput: ""};
   }
@@ -46,7 +47,8 @@ class MapContainer extends React.Component {
     axios.get(req)
       .then(res => {
         this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
-                                  "sidewalk_issues": res.data.sidewalk_issues} });
+                                  "sidewalk_issues": res.data.sidewalk_issues,
+                                  "passable_sidewalks": res.data.passable_sidewalks }});
       })
 
     axios.get('non-city.geojson')
@@ -95,7 +97,21 @@ class MapContainer extends React.Component {
             onZoomEnd = {this.handleZoom}
             onStyleLoad = {this.onMapLoad}>
               <ZoomControl position="bottom-right"/>
-               <Layer type="line" id="missing_sidewalk" paint={{"line-width": 4, "line-color": '#FF0000'}}>
+              <Layer type="line"
+                     id="passable_sidewalk"
+                     paint={{"line-width": 3, "line-color": '#B7B1AE'}}
+                     before="poi_label">
+              {
+                //TODO: add key=id once the features have unique ids
+                this.state.geoJson.passable_sidewalks.map((f) => (
+                  <Feature coordinates={f.geometry.coordinates} />
+                ))
+              }
+              </Layer>
+               <Layer type="line"
+                      id="missing_sidewalk"
+                      paint={{"line-width": 3, "line-color": '#FF0000'}}
+                      before="poi_label">
                {
                  //TODO: add key=id once the features have unique ids
                  this.state.geoJson.missing_sidewalk.map((f) => (
@@ -103,7 +119,10 @@ class MapContainer extends React.Component {
                  ))
                }
                </Layer>
-               <Layer type="line" id="sidewalk_issues" paint={{"line-width": 4, "line-color": '#FFFF00'}}>
+               <Layer type="line"
+                      id="sidewalk_issues"
+                      paint={{"line-width": 3, "line-color": '#FFFF00'}}
+                      before="poi_label">
                {
                  //TODO: add key=id once the features have unique ids
                  this.state.geoJson.sidewalk_issues.map((f) => (
@@ -111,7 +130,10 @@ class MapContainer extends React.Component {
                  ))
                }
                </Layer>
-               <Layer type="fill" id="noncity" paint={{"fill-color": "#808080", "fill-opacity": .5}}>
+               <Layer type="fill"
+                      id="noncity"
+                      paint={{"fill-color": "#808080", "fill-opacity": .5}}
+                      before="poi_label">
                  {
                    this.state.noncity.map((f) => (
                      <Feature coordinates={f.geometry.coordinates} />
