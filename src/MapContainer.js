@@ -34,7 +34,9 @@ class MapContainer extends React.Component {
     this.state = { circleLoc: MILWAUKEE_CENTER,
                    zoom: 15,
                    geoJson: {"missing_sidewalk": [],
-                             "sidewalk_issues": []},
+                             "sidewalk_issues": [],
+                             "passable_sidewalks": []},
+                   missingCurbRamps: [],
                    noncity: [],
                    searchInput: ""};
   }
@@ -43,16 +45,23 @@ class MapContainer extends React.Component {
     var req = predsApi + "?lat1=" + MILWAUKEE_BOUNDS[0][1] + "&long1=" + MILWAUKEE_BOUNDS[0][0]
                + "&lat2=" + MILWAUKEE_BOUNDS[1][1] + "&long2=" + MILWAUKEE_BOUNDS[1][0];
 
-    axios.get(req)
-      .then(res => {
-        this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
-                                  "sidewalk_issues": res.data.sidewalk_issues} });
-      })
+    axios.get('./missing_curb_ramps.geojson')
+    .then(res =>{
+      this.setState({ missingCurbRamps: res.data.features});
+    }
 
-    axios.get('non-city.geojson')
-    .then(res => {
-      this.setState({ noncity: res.data.features})
-    })
+    )
+    // axios.get(req)
+    //   .then(res => {
+    //     this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
+    //                               "sidewalk_issues": res.data.sidewalk_issues,
+    //                               "passable_sidewalks": res.data.passable_sidewalks }});
+    //   })
+    //
+    // axios.get('non-city.geojson')
+    // .then(res => {
+    //   this.setState({ noncity: res.data.features})
+    // })
   }
 
   handleMove = (m) => {
@@ -82,8 +91,9 @@ class MapContainer extends React.Component {
   };
 
   render() {
+
     return (<MapBoxMap
-            style="mapbox://styles/mapbox/basic-v9"
+            style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
               height: '98vh',
               width: '98vw'
@@ -95,30 +105,67 @@ class MapContainer extends React.Component {
             onZoomEnd = {this.handleZoom}
             onStyleLoad = {this.onMapLoad}>
               <ZoomControl position="bottom-right"/>
-               <Layer type="line" id="missing_sidewalk" paint={{"line-width": 4, "line-color": '#FF0000'}}>
+              <Layer type="circle"
+                      id="missing_curb_ramp"
+                      paint={{"circle-radius": [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        13, 2,
+                        16, 5,
+                      ],
+                      "circle-color": '#e01f1f'}}>
                {
-                 //TODO: add key=id once the features have unique ids
-                 this.state.geoJson.missing_sidewalk.map((f) => (
+                 this.state.missingCurbRamps.map((f) => (
                    <Feature coordinates={f.geometry.coordinates} />
                  ))
                }
-               </Layer>
-               <Layer type="line" id="sidewalk_issues" paint={{"line-width": 4, "line-color": '#FFFF00'}}>
-               {
-                 //TODO: add key=id once the features have unique ids
-                 this.state.geoJson.sidewalk_issues.map((f) => (
-                   <Feature coordinates={f.geometry.coordinates} />
-                 ))
-               }
-               </Layer>
-               <Layer type="fill" id="noncity" paint={{"fill-color": "#808080", "fill-opacity": .5}}>
-                 {
-                   this.state.noncity.map((f) => (
-                     <Feature coordinates={f.geometry.coordinates} />
-                   ))
-                 }
-               </Layer>
-           </MapBoxMap>)
+               </ Layer>
+            </MapBoxMap>)
+
+              // <Layer type="line"
+              //         id="passable_sidewalks"
+              //         paint={{"line-width": 3, "line-color": '#B7B1AE'}}
+              //         before="poi_label">
+              //  {
+              //    //TODO: add key=id once the features have unique ids
+              //    this.state.geoJson.passable_sidewalks.map((f) => (
+              //      <Feature coordinates={f.geometry.coordinates} />
+              //    ))
+              //  }
+              //  </Layer>
+              // <Layer type="line"
+              //         id="missing_sidewalk"
+              //         paint={{"line-width": 3, "line-color": '#FF0000'}}
+              //         before="poi_label">
+              //  {
+              //    //TODO: add key=id once the features have unique ids
+              //    this.state.geoJson.missing_sidewalk.map((f) => (
+              //      <Feature coordinates={f.geometry.coordinates} />
+              //    ))
+              //  }
+              //  </Layer>
+              //  <Layer type="line"
+              //         id="sidewalk_issues"
+              //         paint={{"line-width": 3, "line-color": '#FFFF00'}}
+              //         before="poi_label">
+              //  {
+              //    //TODO: add key=id once the features have unique ids
+              //    this.state.geoJson.sidewalk_issues.map((f) => (
+              //      <Feature coordinates={f.geometry.coordinates} />
+              //    ))
+              //  }
+              //  </Layer>
+              //  <Layer type="fill"
+              //         id="noncity"
+              //         paint={{"fill-color": "#808080", "fill-opacity": .5}}
+              //         before="poi_label">
+              //    {
+              //      this.state.noncity.map((f) => (
+              //        <Feature coordinates={f.geometry.coordinates} />
+              //      ))
+              //    }
+              //  </Layer>
   }
 }
 
