@@ -93,7 +93,7 @@ class MapContainer extends React.Component {
   render() {
 
     return (<MapBoxMap
-            style="mapbox://styles/emilyrapport/ck821kfge1kfb1iqqp20363yk"
+            style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
               height: '98vh',
               width: '98vw'
