@@ -36,6 +36,7 @@ class MapContainer extends React.Component {
                    geoJson: {"missing_sidewalk": [],
                              "sidewalk_issues": [],
                              "passable_sidewalks": []},
+                   missingCurbRamps: [],
                    noncity: [],
                    searchInput: ""};
   }
@@ -44,6 +45,12 @@ class MapContainer extends React.Component {
     var req = predsApi + "?lat1=" + MILWAUKEE_BOUNDS[0][1] + "&long1=" + MILWAUKEE_BOUNDS[0][0]
                + "&lat2=" + MILWAUKEE_BOUNDS[1][1] + "&long2=" + MILWAUKEE_BOUNDS[1][0];
 
+    axios.get('./missing_curb_ramps.geojson')
+    .then(res =>{
+      this.setState({ missingCurbRamps: res.data.features});
+    }
+
+    )
     // axios.get(req)
     //   .then(res => {
     //     this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
@@ -98,6 +105,22 @@ class MapContainer extends React.Component {
             onZoomEnd = {this.handleZoom}
             onStyleLoad = {this.onMapLoad}>
               <ZoomControl position="bottom-right"/>
+              <Layer type="circle"
+                      id="missing_curb_ramp"
+                      paint={{"circle-radius": [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        13, 2,
+                        16, 5,
+                      ],
+                      "circle-color": '#e01f1f'}}>
+               {
+                 this.state.missingCurbRamps.map((f) => (
+                   <Feature coordinates={f.geometry.coordinates} />
+                 ))
+               }
+               </ Layer>
             </MapBoxMap>)
 
               // <Layer type="line"
