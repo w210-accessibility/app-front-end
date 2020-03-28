@@ -3,9 +3,11 @@ import axios from 'axios';
 import ReactMapboxGl, { Layer,
                         Feature,
                         ZoomControl,
-                        GeoJSONLayer } from 'react-mapbox-gl';
+                        GeoJSONLayer,
+                        Marker } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import mapboxgl from 'mapbox-gl'
+import mapboxgl from 'mapbox-gl';
+import InSituDialog from './InSituDialog.js'
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -19,6 +21,7 @@ if (process.env.NODE_ENV=="production")
 
 const predsApi = API_URL + "/api/predictions";
 
+
 const MILWAUKEE_CENTER = [-87.9065, 43.0389];
 const MILWAUKEE_BOUNDS = [[-89, 42],[-87, 44]];
 
@@ -31,14 +34,15 @@ const MapBoxMap = ReactMapboxGl({
 class MapContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { circleLoc: MILWAUKEE_CENTER,
-                   zoom: 15,
+    this.state = { zoom: 15,
+                   center: MILWAUKEE_CENTER,
                    geoJson: {"missing_sidewalk": [],
                              "sidewalk_issues": [],
                              "passable_sidewalks": []},
                    missingCurbRamps: [],
                    noncity: [],
-                   searchInput: ""};
+                   searchInput: "",
+                   inSituSelection: null};
   }
 
   componentDidMount() {
@@ -51,6 +55,10 @@ class MapContainer extends React.Component {
     }
 
     )
+
+    //NOTE: this is not actually where this post should go!!!
+    //committing this just for the record
+
     // axios.get(req)
     //   .then(res => {
     //     this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
@@ -78,6 +86,12 @@ class MapContainer extends React.Component {
     this.setState({ zoom: m.getZoom()})
   }
 
+  handleInSituSelection = (map, e) => {
+    var lat_long = [e.lngLat.lng, e.lngLat.lat]
+    this.setState({inSituSelection: lat_long,
+                   center: lat_long})
+  }
+
   onMapLoad = (map) => {
     var geoCoder = new MapboxGeocoder({
                                         accessToken: 'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg',
@@ -98,11 +112,12 @@ class MapContainer extends React.Component {
               height: '98vh',
               width: '98vw'
             }}
-            center={MILWAUKEE_CENTER}
+            center={this.state.center}
             zoom={[this.state.zoom]}
             maxBounds = {MILWAUKEE_BOUNDS}
             onMoveEnd = {this.handleMove}
             onZoomEnd = {this.handleZoom}
+            onClick = {this.handleInSituSelection}
             onStyleLoad = {this.onMapLoad}>
               <ZoomControl position="bottom-right"/>
               <Layer type="circle"
@@ -121,6 +136,10 @@ class MapContainer extends React.Component {
                  ))
                }
                </ Layer>
+               <Layer type="circle" paint={{"circle-radius": 4, "circle-color": "purple"}}>
+                  {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
+               </Layer>
+               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection}/> : null }
             </MapBoxMap>)
 
               // <Layer type="line"

@@ -16,9 +16,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BottomNavBar() {
+export default function BottomNavBar(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+
+  function handleContributeClick(){
+    props.setShowInSituDialog(true);
+  }
 
   return (
     <BottomNavigation
@@ -29,10 +33,10 @@ export default function BottomNavBar() {
       showLabels
       className={classes.root}
     >
-      
+
       <BottomNavigationAction label="Home" icon={<HomeIcon />} />
       <BottomNavigationAction label="Favorite Apps" icon={<AppsIcon />} />
-      <BottomNavigationAction label="Contribute" icon={<AddContentIcon />} />
+      <BottomNavigationAction label="Contribute" icon={<AddContentIcon />} onClick={handleContributeClick} />
     </BottomNavigation>
   );
 }
