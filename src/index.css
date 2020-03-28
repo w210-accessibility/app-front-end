@@ -10,3 +10,15 @@
 .mapboxgl-ctrl-group {
     width: 30px;
 }
+
+.InSituDialog {
+  height: 300px;
+  width: 200px;
+  background-color: #FFFFFF;
+  border-radius: 25px;
+  z-index: 1;
+  margin-top: 20px;
+  margin-left: 20px;
+  position: absolute;
+  float: right;
+}
