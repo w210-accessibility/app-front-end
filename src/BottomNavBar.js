@@ -24,6 +24,10 @@ export default function BottomNavBar(props) {
     props.setShowInSituDialog(true);
   }
 
+  function handleLegendClick(){
+    props.setShowLegend(true);
+  }
+
   return (
     <BottomNavigation
       value={value}
@@ -37,6 +41,7 @@ export default function BottomNavBar(props) {
       <BottomNavigationAction label="Home" icon={<HomeIcon />} />
       <BottomNavigationAction label="Favorite Apps" icon={<AppsIcon />} />
       <BottomNavigationAction label="Contribute" icon={<AddContentIcon />} onClick={handleContributeClick} />
+      <BottomNavigationAction label="Legend" icon={<AddContentIcon />} onClick={handleLegendClick} />
     </BottomNavigation>
   );
 }
