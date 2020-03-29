@@ -10,10 +10,10 @@ function App() {
   return (
     <div>
       <TopAppBar />
-      <MapContainer showInSituDialog={showInSituDialog} />
+      <MapContainer showInSituDialog={showInSituDialog} setShowInSituDialog={setShowInSituDialog}/>
       <BottomNavBar setShowInSituDialog={setShowInSituDialog} />
     </div>
-    
+
   );
 }
 
