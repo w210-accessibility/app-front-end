@@ -1,35 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import InSituForm from './InSituForm.js';
 
 
 function InSituDialog(props){
   const inSituApi = props.api_url + "/api/addInSitu/"
-  const [checkedBoxes, setCheckedBoxes] = useState({'snowIce': false,
-                                                    'surfaceIrregularity': false,
-                                                    'missingCurbRamp': false});
+  const [dialog, setDialog] = useState("Find a place on the map where you want to report an issue and click on the exact location:")
+  const [showInSituForm, setShowInSituForm] = useState(false);
 
-  const handleChange = (e) => {
-    setCheckedBoxes({
-      ...checkedBoxes,
-      [e.target.name]: checkedBoxes[e.target.name]==false ? true : false,
-    });
-  }
-
-  function controlDialogFlow(){
-    if (props.location == null){
-      return <p>Choose a location on the map where you want to report an issue:</p>
-    } else {
-      return (<React.Fragment>
-                <p>Please select all conditions that apply to this location:</p>
-                <input type="checkbox" name="snowIce" checked={checkedBoxes['snowIce']} onChange={handleChange} /> Snow/Ice
-                <input type="checkbox" name="surfaceIrregularity" checked={checkedBoxes['surfaceIrregularity']} onChange={handleChange} /> Surface Irregularity
-                <input type="checkbox" name="missingCurbRamp" checked={checkedBoxes['missingCurbRamp']} onChange={handleChange} /> Missing Curb Ramp
-                <button onClick={handleSubmit}>Submit</button>
-              </React.Fragment>)
-    }
-  }
-
-  function handleSubmit(){
+  function handleSubmit(checkedBoxes){
+    setShowInSituForm(false);
+    setDialog("Thank you for submitting this issue.");
     const keys = Object.keys(checkedBoxes);
     keys.map((key) => {
       if (checkedBoxes[key]){
@@ -40,15 +21,29 @@ function InSituDialog(props){
           label: key
         })
              .then( res => {
-               console.log(res);
+               props.handleInSituFlowEnd();
+             })
+             .catch( err => {
+               // for now this is the same as success
+               // we just want to make sure user gets back to map whether or not heir submission worked
+               props.handleInSituFlowEnd();
              })
       }
     })
 
   }
 
+  useEffect(() => {
+    // THIS IS REALLY HACKY
+    if (props.location != null && !dialog.includes("Thank you")){
+      setDialog("Please select all conditions that apply to this location:")
+      setShowInSituForm(true);
+    }
+  })
+
   return (<div className='InSituDialog'>
-          {controlDialogFlow()}
+            <p>{dialog}</p>
+            {showInSituForm ? <InSituForm handleSubmit={handleSubmit}/> : null}
           </div>)
 
 }

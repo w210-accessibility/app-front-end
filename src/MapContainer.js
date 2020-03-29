@@ -53,23 +53,7 @@ class MapContainer extends React.Component {
     .then(res =>{
       this.setState({ missingCurbRamps: res.data.features});
     }
-
     )
-
-    //NOTE: this is not actually where this post should go!!!
-    //committing this just for the record
-
-    // axios.get(req)
-    //   .then(res => {
-    //     this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
-    //                               "sidewalk_issues": res.data.sidewalk_issues,
-    //                               "passable_sidewalks": res.data.passable_sidewalks }});
-    //   })
-    //
-    // axios.get('non-city.geojson')
-    // .then(res => {
-    //   this.setState({ noncity: res.data.features})
-    // })
   }
 
   handleMove = (m) => {
@@ -87,9 +71,16 @@ class MapContainer extends React.Component {
   }
 
   handleInSituSelection = (map, e) => {
-    var lat_long = [e.lngLat.lng, e.lngLat.lat]
-    this.setState({inSituSelection: lat_long,
-                   center: lat_long})
+    if (this.props.showInSituDialog){
+      var lat_long = [e.lngLat.lng, e.lngLat.lat]
+      this.setState({inSituSelection: lat_long,
+                     center: lat_long})
+    }
+  }
+
+  handleInSituFlowEnd = () => {
+    setTimeout(this.props.setShowInSituDialog(false), 5000);
+    this.setState({inSituSelection: null});
   }
 
   onMapLoad = (map) => {
@@ -139,7 +130,7 @@ class MapContainer extends React.Component {
                <Layer type="circle" paint={{"circle-radius": 4, "circle-color": "purple"}}>
                   {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
                </Layer>
-               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection}/> : null }
+               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
             </MapBoxMap>)
 
               // <Layer type="line"
