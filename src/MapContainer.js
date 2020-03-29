@@ -100,7 +100,7 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
-              height: '98vh',
+              height: '84vh',
               width: '98vw'
             }}
             center={this.state.center}

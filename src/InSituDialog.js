@@ -20,14 +20,14 @@ function InSituDialog(props){
           mode: 'select',
           label: key
         })
-             .then( res => {
-               props.handleInSituFlowEnd();
-             })
-             .catch( err => {
+             //.then( res => {
+            //   props.handleInSituFlowEnd();
+            // })
+            // .catch( err => {
                // for now this is the same as success
                // we just want to make sure user gets back to map whether or not heir submission worked
-               props.handleInSituFlowEnd();
-             })
+            //   props.handleInSituFlowEnd();
+            // })
       }
     })
 
@@ -42,6 +42,8 @@ function InSituDialog(props){
   })
 
   return (<div className='InSituDialog'>
+            <h2>Report a Sidewalk Issue</h2>
+            <button className="close" onClick={() => props.handleInSituFlowEnd()}>&times;</button>
             <p>{dialog}</p>
             {showInSituForm ? <InSituForm handleSubmit={handleSubmit}/> : null}
           </div>)
