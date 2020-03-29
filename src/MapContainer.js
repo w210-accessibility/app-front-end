@@ -36,11 +36,7 @@ class MapContainer extends React.Component {
     super(props);
     this.state = { zoom: 15,
                    center: MILWAUKEE_CENTER,
-                   geoJson: {"missing_sidewalk": [],
-                             "sidewalk_issues": [],
-                             "passable_sidewalks": []},
                    missingCurbRamps: [],
-                   noncity: [],
                    searchInput: "",
                    inSituSelection: null};
   }
@@ -54,6 +50,16 @@ class MapContainer extends React.Component {
       this.setState({ missingCurbRamps: res.data.features});
     }
     )
+  }
+
+  renderGeolocation() {
+    if (this.props.isGeolocationAvailable &&
+        this.props.isGeolocationEnabled &&
+        this.props.coords) {
+      return (<Layer type="circle" paint={{"circle-radius": 6, "circle-color": "#1E90FF", "circle-stroke-width": 1, "circle-stroke-color": "white"}}>
+                 <Feature coordinates={[this.props.coords.longitude, this.props.coords.latitude]} />
+              </Layer>)
+    }
   }
 
   handleMove = (m) => {
@@ -131,6 +137,7 @@ class MapContainer extends React.Component {
                   {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
                </Layer>
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
+               {this.renderGeolocation()}
             </MapBoxMap>)
 
               // <Layer type="line"
