@@ -6,12 +6,17 @@ import TopAppBar from './TopAppBar.js';
 
 function App() {
   const [showInSituDialog, setShowInSituDialog] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
 
   return (
     <div>
       <TopAppBar />
-      <MapContainer showInSituDialog={showInSituDialog} setShowInSituDialog={setShowInSituDialog}/>
-      <BottomNavBar setShowInSituDialog={setShowInSituDialog} />
+      <MapContainer showInSituDialog={showInSituDialog}
+                    setShowInSituDialog={setShowInSituDialog}
+                    showLegend={showLegend}
+                    setShowLegend={setShowLegend}/>
+      <BottomNavBar setShowInSituDialog={setShowInSituDialog}
+                    setShowLegend={setShowLegend}/>
     </div>
 
   );

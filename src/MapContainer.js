@@ -7,7 +7,8 @@ import ReactMapboxGl, { Layer,
                         Marker } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
-import InSituDialog from './InSituDialog.js'
+import InSituDialog from './InSituDialog.js';
+import Legend from './Legend.js';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -131,6 +132,7 @@ class MapContainer extends React.Component {
                   {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
                </Layer>
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
+               {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
             </MapBoxMap>)
 
               // <Layer type="line"
