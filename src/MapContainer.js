@@ -3,10 +3,17 @@ import axios from 'axios';
 import ReactMapboxGl, { Layer,
                         Feature,
                         ZoomControl,
-                        GeoJSONLayer } from 'react-mapbox-gl';
+                        GeoJSONLayer,
+                        Marker } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+<<<<<<< HEAD
 import mapboxgl from 'mapbox-gl'
 import SidewaukeeLogo from './logo_rectangle.png';
+=======
+import mapboxgl from 'mapbox-gl';
+import InSituDialog from './InSituDialog.js';
+import Legend from './Legend.js';
+>>>>>>> 566955eb9452e59e1c30682007b382aa9695e425
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -20,6 +27,7 @@ if (process.env.NODE_ENV=="production")
 
 const predsApi = API_URL + "/api/predictions";
 
+
 const MILWAUKEE_CENTER = [-87.9065, 43.0389];
 const MILWAUKEE_BOUNDS = [[-89, 42],[-87, 44]];
 
@@ -32,14 +40,15 @@ const MapBoxMap = ReactMapboxGl({
 class MapContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { circleLoc: MILWAUKEE_CENTER,
-                   zoom: 15,
+    this.state = { zoom: 15,
+                   center: MILWAUKEE_CENTER,
                    geoJson: {"missing_sidewalk": [],
                              "sidewalk_issues": [],
                              "passable_sidewalks": []},
                    missingCurbRamps: [],
                    noncity: [],
-                   searchInput: ""};
+                   searchInput: "",
+                   inSituSelection: null};
   }
 
   componentDidMount() {
@@ -50,19 +59,7 @@ class MapContainer extends React.Component {
     .then(res =>{
       this.setState({ missingCurbRamps: res.data.features});
     }
-
     )
-    // axios.get(req)
-    //   .then(res => {
-    //     this.setState({ geoJson: {"missing_sidewalk": res.data.missing_sidewalk,
-    //                               "sidewalk_issues": res.data.sidewalk_issues,
-    //                               "passable_sidewalks": res.data.passable_sidewalks }});
-    //   })
-    //
-    // axios.get('non-city.geojson')
-    // .then(res => {
-    //   this.setState({ noncity: res.data.features})
-    // })
   }
 
   handleMove = (m) => {
@@ -77,6 +74,19 @@ class MapContainer extends React.Component {
 
   handleZoom = (m) => {
     this.setState({ zoom: m.getZoom()})
+  }
+
+  handleInSituSelection = (map, e) => {
+    if (this.props.showInSituDialog){
+      var lat_long = [e.lngLat.lng, e.lngLat.lat]
+      this.setState({inSituSelection: lat_long,
+                     center: lat_long})
+    }
+  }
+
+  handleInSituFlowEnd = () => {
+    setTimeout(this.props.setShowInSituDialog(false), 5000);
+    this.setState({inSituSelection: null});
   }
 
   onMapLoad = (map) => {
@@ -96,14 +106,19 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
+<<<<<<< HEAD
               height: '90vh',
+=======
+              height: '84vh',
+>>>>>>> 566955eb9452e59e1c30682007b382aa9695e425
               width: '98vw'
             }}
-            center={MILWAUKEE_CENTER}
+            center={this.state.center}
             zoom={[this.state.zoom]}
             maxBounds = {MILWAUKEE_BOUNDS}
             onMoveEnd = {this.handleMove}
             onZoomEnd = {this.handleZoom}
+            onClick = {this.handleInSituSelection}
             onStyleLoad = {this.onMapLoad}>
               <ZoomControl position="bottom-right"/>
               <Layer type="circle"
@@ -123,10 +138,19 @@ class MapContainer extends React.Component {
                }
                </ Layer>
                <Layer type="circle" paint={{"circle-radius": 4, "circle-color": "purple"}}>
+<<<<<<< HEAD
                </Layer>
               </MapBoxMap>)
             
             
+=======
+                  {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
+               </Layer>
+               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
+               {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
+            </MapBoxMap>)
+
+>>>>>>> 566955eb9452e59e1c30682007b382aa9695e425
               // <Layer type="line"
               //         id="passable_sidewalks"
               //         paint={{"line-width": 3, "line-color": '#B7B1AE'}}

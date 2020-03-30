@@ -10,3 +10,69 @@
 .mapboxgl-ctrl-group {
     width: 30px;
 }
+
+.InSituDialog {
+  width: 240px;
+  background-color: #FFFFFF;
+  color: #333;
+  border-radius: 5px;
+  z-index: 1;
+  padding: 20px;
+  margin-top: 20px;
+  margin-left: 20px;
+  position: absolute;
+  float: right;
+  font-family: Helvetica Neue,Arial,Helvetica,sans-serif;
+}
+
+.InSituDialog h2 {
+  margin-top: 0;
+}
+
+.InSituDialog label {
+  display: block;
+  margin-left: 5px;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0px,0px,0px,0px;
+  transition: all 200ms;
+  background-color: #ffffff;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  border-width: 0px;
+}
+
+.close:hover {
+  color: #6d0808;
+}
+.close:focus {
+  outline: none;
+}
+
+#firstLegendItem {
+  padding-top: 12px;
+}
+#submit {
+  margin-top: 10px;
+  margin-left: 10px;
+  font-family: Helvetica Neue,Arial,Helvetica,sans-serif;
+  font-weight: 700;
+  padding-left: 15px;
+  padding-right: 15px;
+  color: #000;
+  background-color: #4CAF50;
+  border-width: thin;
+  border-color: #ffffff;
+}
+
+/* If on mobile device, make sure it appears below search bar */
+@media(max-width:500px){
+.InSituDialog {
+  margin-top: 80px;
+}}
