@@ -6,6 +6,7 @@ import ReactMapboxGl, { Layer,
                         GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl'
+import SidewaukeeLogo from './logo_rectangle.png';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -95,7 +96,7 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
-              height: '98vh',
+              height: '90vh',
               width: '98vw'
             }}
             center={MILWAUKEE_CENTER}
@@ -121,8 +122,11 @@ class MapContainer extends React.Component {
                  ))
                }
                </ Layer>
-            </MapBoxMap>)
-
+               <Layer type="circle" paint={{"circle-radius": 4, "circle-color": "purple"}}>
+               </Layer>
+              </MapBoxMap>)
+            
+            
               // <Layer type="line"
               //         id="passable_sidewalks"
               //         paint={{"line-width": 3, "line-color": '#B7B1AE'}}
