@@ -6,14 +6,10 @@ import ReactMapboxGl, { Layer,
                         GeoJSONLayer,
                         Marker } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-<<<<<<< HEAD
-import mapboxgl from 'mapbox-gl'
-import SidewaukeeLogo from './logo_rectangle.png';
-=======
 import mapboxgl from 'mapbox-gl';
 import InSituDialog from './InSituDialog.js';
 import Legend from './Legend.js';
->>>>>>> 566955eb9452e59e1c30682007b382aa9695e425
+import SidewaukeeLogo from './logo_rectangle.png';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -48,7 +44,8 @@ class MapContainer extends React.Component {
                    missingCurbRamps: [],
                    noncity: [],
                    searchInput: "",
-                   inSituSelection: null};
+                   inSituSelection: null,
+                   SidewaukeeLogo};
   }
 
   componentDidMount() {
@@ -106,11 +103,7 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
-<<<<<<< HEAD
-              height: '90vh',
-=======
               height: '84vh',
->>>>>>> 566955eb9452e59e1c30682007b382aa9695e425
               width: '98vw'
             }}
             center={this.state.center}
@@ -138,19 +131,15 @@ class MapContainer extends React.Component {
                }
                </ Layer>
                <Layer type="circle" paint={{"circle-radius": 4, "circle-color": "purple"}}>
-<<<<<<< HEAD
-               </Layer>
-              </MapBoxMap>)
-            
-            
-=======
                   {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
                </Layer>
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
                {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
+               <Layer>
+                 <image id= 'SidewaukeeLogo' />
+               </Layer>
             </MapBoxMap>)
 
->>>>>>> 566955eb9452e59e1c30682007b382aa9695e425
               // <Layer type="line"
               //         id="passable_sidewalks"
               //         paint={{"line-width": 3, "line-color": '#B7B1AE'}}
