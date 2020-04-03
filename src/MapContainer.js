@@ -10,6 +10,7 @@ import mapboxgl from 'mapbox-gl';
 import InSituDialog from './InSituDialog.js';
 import Legend from './Legend.js';
 import SidewaukeeLogo from './logo_rectangle.png';
+import ContributeIcon from './contribute_icon.svg';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -25,7 +26,7 @@ const predsApi = API_URL + "/api/predictions";
 
 
 const MILWAUKEE_CENTER = [-87.9065, 43.0389];
-const MILWAUKEE_BOUNDS = [[-89, 42],[-87, 44]];
+const MILWAUKEE_BOUNDS = [[-89, 42.5],[-87, 44]];
 
 const MapBoxMap = ReactMapboxGl({
   //todo: hide this token in a config
@@ -82,8 +83,7 @@ class MapContainer extends React.Component {
   handleInSituSelection = (map, e) => {
     if (this.props.showInSituDialog){
       var lat_long = [e.lngLat.lng, e.lngLat.lat]
-      this.setState({inSituSelection: lat_long,
-                     center: lat_long})
+      this.setState({inSituSelection: lat_long})
     }
   }
 
@@ -105,7 +105,9 @@ class MapContainer extends React.Component {
   };
 
   render() {
-
+    const image = new Image();
+    image.src = ContributeIcon;
+    const images = ["myImage", image];
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
@@ -136,7 +138,9 @@ class MapContainer extends React.Component {
                  ))
                }
                </ Layer>
-               <Layer type="circle" paint={{"circle-radius": 4, "circle-color": "purple"}}>
+               <Layer type="symbol"
+                      layout={{ "icon-image": "myImage", "icon-allow-overlap": true }}
+                      images={images}>
                   {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
                </Layer>
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
@@ -147,49 +151,6 @@ class MapContainer extends React.Component {
                </Layer>
             </MapBoxMap>)
 
-              // <Layer type="line"
-              //         id="passable_sidewalks"
-              //         paint={{"line-width": 3, "line-color": '#B7B1AE'}}
-              //         before="poi_label">
-              //  {
-              //    //TODO: add key=id once the features have unique ids
-              //    this.state.geoJson.passable_sidewalks.map((f) => (
-              //      <Feature coordinates={f.geometry.coordinates} />
-              //    ))
-              //  }
-              //  </Layer>
-              // <Layer type="line"
-              //         id="missing_sidewalk"
-              //         paint={{"line-width": 3, "line-color": '#FF0000'}}
-              //         before="poi_label">
-              //  {
-              //    //TODO: add key=id once the features have unique ids
-              //    this.state.geoJson.missing_sidewalk.map((f) => (
-              //      <Feature coordinates={f.geometry.coordinates} />
-              //    ))
-              //  }
-              //  </Layer>
-              //  <Layer type="line"
-              //         id="sidewalk_issues"
-              //         paint={{"line-width": 3, "line-color": '#FFFF00'}}
-              //         before="poi_label">
-              //  {
-              //    //TODO: add key=id once the features have unique ids
-              //    this.state.geoJson.sidewalk_issues.map((f) => (
-              //      <Feature coordinates={f.geometry.coordinates} />
-              //    ))
-              //  }
-              //  </Layer>
-              //  <Layer type="fill"
-              //         id="noncity"
-              //         paint={{"fill-color": "#808080", "fill-opacity": .5}}
-              //         before="poi_label">
-              //    {
-              //      this.state.noncity.map((f) => (
-              //        <Feature coordinates={f.geometry.coordinates} />
-              //      ))
-              //    }
-              //  </Layer>
   }
 }
 
