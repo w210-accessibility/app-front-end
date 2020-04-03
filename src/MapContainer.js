@@ -7,7 +7,9 @@ import ReactMapboxGl, { Layer,
                         Marker } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
-import InSituDialog from './InSituDialog.js'
+import InSituDialog from './InSituDialog.js';
+import Legend from './Legend.js';
+import SidewaukeeLogo from './logo_rectangle.png';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -38,7 +40,8 @@ class MapContainer extends React.Component {
                    center: MILWAUKEE_CENTER,
                    missingCurbRamps: [],
                    searchInput: "",
-                   inSituSelection: null};
+                   inSituSelection: null,
+                   SidewaukeeLogo};
   }
 
   componentDidMount() {
@@ -138,6 +141,10 @@ class MapContainer extends React.Component {
                </Layer>
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
                {this.renderGeolocation()}
+               {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
+               <Layer>
+                 <image id= 'SidewaukeeLogo' />
+               </Layer>
             </MapBoxMap>)
 
               // <Layer type="line"
