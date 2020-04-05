@@ -134,9 +134,9 @@ export default function BottomNavBar(props) {
                                 TransitionComponent={Fade}
                               >
                                 <MenuItem onClick={handleClose2}>
-                                  <Link href="https://w210-accessibility.github.io/sidewaukee/" target="_blank" rel="noopener">
+                                  <Link href="https://www.ischool.berkeley.edu/projects/2020/sidewaukee-making-our-city-accessible" target="_blank" rel="noopener">
                                      <b>Sidewaukee Pages</b><br></br>
-                                     Learn more about our project from our github pages
+                                     Learn more about our project 
                                    </Link>
                                 </MenuItem>
                               </Menu>
