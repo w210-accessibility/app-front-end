@@ -122,7 +122,7 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
-              height: '90vh',
+              height: '85vh',
               width: '98vw'
             }}
             center={this.state.center}
@@ -166,7 +166,7 @@ class MapContainer extends React.Component {
                {this.props.showLegend ? <Legend api_url={API_URL} handleLegendClick={this.props.handleLegendClick}/> : null }
 
                <Button size="large">
-                  <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" />
+                  <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" display="block"/>
                </Button>
 
             </MapBoxMap>)
