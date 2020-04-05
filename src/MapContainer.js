@@ -9,6 +9,7 @@ import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
 import InSituDialog from './InSituDialog.js';
 import Legend from './Legend.js';
+import HoverOver from './HoverOver.js';
 import SidewaukeeLogo from './logo_rectangle.png';
 import { Button } from '@material-ui/core';
 import AboutIcon from '@material-ui/icons/InfoOutlined';
@@ -99,6 +100,10 @@ class MapContainer extends React.Component {
     this.setState({inSituSelection: null});
   }
 
+  handleInSituHover = (f) => {
+    return <HoverOver label={f.label} />
+  }
+
   onMapLoad = (map) => {
     var geoCoder = new MapboxGeocoder({
                                         accessToken: 'pk.eyJ1IjoiZW1pbHlyYXBwb3J0IiwiYSI6ImNrNzgzOXV2ZzBjem8zaHM3YXcydHY4ZWkifQ.8fTcIfORRhn_Auh4mOrlRg',
@@ -159,17 +164,17 @@ class MapContainer extends React.Component {
                       layout={{ "icon-image": "inSituDisImage", "icon-allow-overlap": true }}
                       images={inSituImages}>
                   {this.state.inSituFeedback.map((f) => (
-                    <Feature coordinates={f.location} />
+                    <Feature coordinates={f.location} onClick={() => this.handleInSituHover(f)} />
                   ))}
                </Layer>
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
                {this.renderGeolocation()}
                {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
-               
+
                <Button size="large">
                   <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" />
                </Button>
-               
+
             </MapBoxMap>)
 
   }

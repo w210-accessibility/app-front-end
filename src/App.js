@@ -8,11 +8,11 @@ import {ReactComponent as Logo} from './logo_rectangle.png';
 
 function App() {
   const [showInSituDialog, setShowInSituDialog] = useState(false);
-  const [showLegend, setShowLegend] = useState(false);
+  const [showLegend, setShowLegend] = useState(true);
 
   return (
     <div>
-      <MapContainerGeolocated showInSituDialog={showInSituDialog} 
+      <MapContainerGeolocated showInSituDialog={showInSituDialog}
                               setShowInSituDialog={setShowInSituDialog}
                               showLegend={showLegend}
                               setShowLegend={setShowLegend}/>
