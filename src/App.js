@@ -9,15 +9,38 @@ import {ReactComponent as Logo} from './logo_rectangle.png';
 function App() {
   const [showInSituDialog, setShowInSituDialog] = useState(false);
   const [showLegend, setShowLegend] = useState(true);
+  const [inSituSelection, setInSituSelection] = useState(null);
+
+  function handleLegendClick(){
+    if (showLegend){
+      setShowLegend(false);
+    } else {
+      setShowLegend(true);
+      setShowInSituDialog(false);
+      setInSituSelection(null);
+    }
+  }
+
+  function handleInSituStatusChange(){
+    if (showInSituDialog){
+      setShowInSituDialog(false);
+      setInSituSelection(null);
+    } else {
+      setShowLegend(false);
+      setShowInSituDialog(true);
+    }
+  }
 
   return (
     <div>
-      <MapContainerGeolocated showInSituDialog={showInSituDialog}
-                              setShowInSituDialog={setShowInSituDialog}
-                              showLegend={showLegend}
-                              setShowLegend={setShowLegend}/>
-      <BottomNavBar setShowInSituDialog={setShowInSituDialog}
-                    setShowLegend={setShowLegend}/>
+      <MapContainerGeolocated handleInSituStatusChange={handleInSituStatusChange}
+                              handleLegendClick={handleLegendClick}
+                              showInSituDialog={showInSituDialog}
+                              inSituSelection={inSituSelection}
+                              setInSituSelection={setInSituSelection}
+                              showLegend={showLegend}/>
+      <BottomNavBar handleInSituStatusChange={handleInSituStatusChange}
+                    handleLegendClick={handleLegendClick}/>
     </div>
 
   );

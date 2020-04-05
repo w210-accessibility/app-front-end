@@ -45,7 +45,6 @@ class MapContainer extends React.Component {
                    center: MILWAUKEE_CENTER,
                    missingCurbRamps: [],
                    searchInput: "",
-                   inSituSelection: null,
                    SidewaukeeLogo,
                    inSituFeedback: []};
   }
@@ -91,13 +90,8 @@ class MapContainer extends React.Component {
   handleInSituSelection = (map, e) => {
     if (this.props.showInSituDialog){
       var lat_long = [e.lngLat.lng, e.lngLat.lat]
-      this.setState({inSituSelection: lat_long})
+      this.props.setInSituSelection(lat_long);
     }
-  }
-
-  handleInSituFlowEnd = () => {
-    setTimeout(this.props.setShowInSituDialog(false), 5000);
-    this.setState({inSituSelection: null});
   }
 
   handleInSituHover = (f) => {
@@ -158,7 +152,7 @@ class MapContainer extends React.Component {
                <Layer type="symbol"
                       layout={{ "icon-image": "contributeImage", "icon-allow-overlap": true }}
                       images={images}>
-                  {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
+                  {this.props.inSituSelection ? <Feature coordinates={this.props.inSituSelection} /> : null}
                </Layer>
                <Layer type="symbol"
                       layout={{ "icon-image": "inSituDisImage", "icon-allow-overlap": true }}
@@ -167,9 +161,9 @@ class MapContainer extends React.Component {
                     <Feature coordinates={f.location} onClick={() => this.handleInSituHover(f)} />
                   ))}
                </Layer>
-               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
+               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.props.inSituSelection} handleInSituStatusChange={this.props.handleInSituStatusChange}/> : null }
                {this.renderGeolocation()}
-               {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
+               {this.props.showLegend ? <Legend api_url={API_URL} handleLegendClick={this.props.handleLegendClick}/> : null }
 
                <Button size="large">
                   <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" />

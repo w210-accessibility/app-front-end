@@ -5,7 +5,7 @@ function Legend(props){
   const inSituIcon = new Image();
   inSituIcon.src = InSituIcon;
   return (<div className="InSituDialog">
-            <button className="close" id="legendClose" onClick={() => props.setShowLegend(false)}>&times;</button>
+            <button className="close" id="legendClose" onClick={props.handleLegendClick}>&times;</button>
             <p id="firstLegendItem"><svg height="10" width="50">
                   <line x1="0" y1="0" x2="30" y2="0" style={{stroke: "#e01f1f", strokeWidth: 7}} />
                 </svg>
