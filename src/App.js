@@ -11,7 +11,6 @@ function App() {
 
   return (
     <div>
-      <TopAppBar />
       <MapContainer showInSituDialog={showInSituDialog}
                     setShowInSituDialog={setShowInSituDialog}
                     showLegend={showLegend}

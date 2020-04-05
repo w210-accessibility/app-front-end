@@ -10,6 +10,9 @@ import mapboxgl from 'mapbox-gl';
 import InSituDialog from './InSituDialog.js';
 import Legend from './Legend.js';
 import SidewaukeeLogo from './logo_rectangle.png';
+import { Button } from '@material-ui/core';
+import AboutIcon from '@material-ui/icons/InfoOutlined';
+
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -103,7 +106,7 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
-              height: '84vh',
+              height: '90vh',
               width: '98vw'
             }}
             center={this.state.center}
@@ -135,9 +138,11 @@ class MapContainer extends React.Component {
                </Layer>
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
                {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
-               <Layer>
-                 <image id= 'SidewaukeeLogo' />
-               </Layer>
+               
+               <Button size="large">
+                  <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" />
+               </Button>
+               
             </MapBoxMap>)
 
               // <Layer type="line"
