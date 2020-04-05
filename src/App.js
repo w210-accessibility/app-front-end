@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { render } from "react-dom";
 import MapContainer from './MapContainer.js';
+import MapContainerGeolocated from './MapContainerGeolocated.js';
 import BottomNavBar from './BottomNavBar.js';
 import TopAppBar from './TopAppBar';
 import {ReactComponent as Logo} from './logo_rectangle.png';
@@ -11,10 +12,10 @@ function App() {
 
   return (
     <div>
-      <MapContainer showInSituDialog={showInSituDialog}
-                    setShowInSituDialog={setShowInSituDialog}
-                    showLegend={showLegend}
-                    setShowLegend={setShowLegend}/>
+      <MapContainerGeolocated showInSituDialog={showInSituDialog} 
+                              setShowInSituDialog={setShowInSituDialog}
+                              showLegend={showLegend}
+                              setShowLegend={setShowLegend}/>
       <BottomNavBar setShowInSituDialog={setShowInSituDialog}
                     setShowLegend={setShowLegend}/>
     </div>
