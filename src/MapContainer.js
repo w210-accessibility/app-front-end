@@ -10,6 +10,8 @@ import mapboxgl from 'mapbox-gl';
 import InSituDialog from './InSituDialog.js';
 import Legend from './Legend.js';
 import SidewaukeeLogo from './logo_rectangle.png';
+import { Button } from '@material-ui/core';
+import AboutIcon from '@material-ui/icons/InfoOutlined';
 import ContributeIcon from './contribute_icon.svg';
 import InSituIcon from './in_situ_icon.svg';
 
@@ -121,7 +123,7 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
-              height: '84vh',
+              height: '90vh',
               width: '98vw'
             }}
             center={this.state.center}
@@ -163,9 +165,11 @@ class MapContainer extends React.Component {
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
                {this.renderGeolocation()}
                {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
-               <Layer>
-                 <image id= 'SidewaukeeLogo' />
-               </Layer>
+               
+               <Button size="large">
+                  <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" />
+               </Button>
+               
             </MapBoxMap>)
 
   }

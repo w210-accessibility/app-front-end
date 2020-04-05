@@ -12,7 +12,6 @@ function App() {
 
   return (
     <div>
-      <TopAppBar />
       <MapContainerGeolocated showInSituDialog={showInSituDialog} 
                               setShowInSituDialog={setShowInSituDialog}
                               showLegend={showLegend}
