@@ -43,7 +43,7 @@ function InSituDialog(props){
 
   return (<div className='InSituDialog'>
             <h2>Report a Sidewalk Issue</h2>
-            <button className="close" onClick={() => props.handleInSituFlowEnd()}>&times;</button>
+            <button className="close" onClick={() => props.handleInSituStatusChange()}>&times;</button>
             <p>{dialog}</p>
             {showInSituForm ? <InSituForm handleSubmit={handleSubmit}/> : null}
           </div>)

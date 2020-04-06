@@ -4,7 +4,8 @@ import ReactMapboxGl, { Layer,
                         Feature,
                         ZoomControl,
                         GeoJSONLayer,
-                        Marker } from 'react-mapbox-gl';
+                        Marker,
+                        Popup } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
 import InSituDialog from './InSituDialog.js';
@@ -44,9 +45,9 @@ class MapContainer extends React.Component {
                    center: MILWAUKEE_CENTER,
                    missingCurbRamps: [],
                    searchInput: "",
-                   inSituSelection: null,
                    SidewaukeeLogo,
-                   inSituFeedback: []};
+                   inSituFeedback: [],
+                   popup: null};
   }
 
   componentDidMount() {
@@ -73,6 +74,35 @@ class MapContainer extends React.Component {
     }
   }
 
+  translateInSituLabel = (l) => {
+    if (l=='surfaceIrregularity'){
+      return "Surface Irregularity"
+    } else if (l=='construction'){
+      return "Construction"
+    } else if (l=="snowIce"){
+      return "Snow or Ice"
+    }
+      else if (l=="missingCurbRamp"){
+        return "Missing Curb Ramp"
+      } else if (l=="puddles"){
+        return "Puddles"
+      } else if (l=="normal"){
+        return "Normal"
+      }
+  }
+
+  renderPopup(){
+    if (this.state.popup != null){
+      const label = this.translateInSituLabel(this.state.popup.label);
+      return (<Popup
+                coordinates={this.state.popup.location}>
+                <p>{label}</p>
+              </Popup>)
+    } else {
+      return null
+    }
+  }
+
   handleMove = (m) => {
     // don't really need this but keeping it around as a reminder of what's in m
     // var input = m._controls[2].inputString;
@@ -90,13 +120,12 @@ class MapContainer extends React.Component {
   handleInSituSelection = (map, e) => {
     if (this.props.showInSituDialog){
       var lat_long = [e.lngLat.lng, e.lngLat.lat]
-      this.setState({inSituSelection: lat_long})
+      this.props.setInSituSelection(lat_long);
     }
   }
 
-  handleInSituFlowEnd = () => {
-    setTimeout(this.props.setShowInSituDialog(false), 5000);
-    this.setState({inSituSelection: null});
+  handleInSituHover = (f) => {
+    this.setState({popup: f});
   }
 
   onMapLoad = (map) => {
@@ -123,8 +152,8 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
-              height: '90vh',
-              width: '98vw'
+              height: '80vh',
+              width: '96vw'
             }}
             center={this.state.center}
             zoom={[this.state.zoom]}
@@ -153,23 +182,23 @@ class MapContainer extends React.Component {
                <Layer type="symbol"
                       layout={{ "icon-image": "contributeImage", "icon-allow-overlap": true }}
                       images={images}>
-                  {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
+                  {this.props.inSituSelection ? <Feature coordinates={this.props.inSituSelection} /> : null}
                </Layer>
                <Layer type="symbol"
                       layout={{ "icon-image": "inSituDisImage", "icon-allow-overlap": true }}
                       images={inSituImages}>
                   {this.state.inSituFeedback.map((f) => (
-                    <Feature coordinates={f.location} />
+                    <Feature data-tip={f.label} coordinates={f.location} onMouseEnter={() => this.handleInSituHover(f)} onMouseLeave={() => this.setState({popup: null})} />
                   ))}
                </Layer>
-               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
+               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.props.inSituSelection} handleInSituStatusChange={this.props.handleInSituStatusChange}/> : null }
                {this.renderGeolocation()}
-               {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
-               
+               {this.props.showLegend ? <Legend api_url={API_URL} handleLegendClick={this.props.handleLegendClick}/> : null }
+               {this.renderPopup()}
                <Button size="large">
                   <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" />
                </Button>
-               
+
             </MapBoxMap>)
 
   }
