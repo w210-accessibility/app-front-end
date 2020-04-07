@@ -3,7 +3,6 @@ import { render } from "react-dom";
 import MapContainer from './MapContainer.js';
 import BottomNavBar from './BottomNavBar.js';
 import TopAppBar from './TopAppBar';
-import {ReactComponent as Logo} from './logo_rectangle.png';
 
 function App() {
   const [showInSituDialog, setShowInSituDialog] = useState(false);
@@ -11,6 +10,7 @@ function App() {
 
   return (
     <div>
+      <TopAppBar />
       <MapContainer showInSituDialog={showInSituDialog}
                     setShowInSituDialog={setShowInSituDialog}
                     showLegend={showLegend}
