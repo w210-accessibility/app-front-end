@@ -16,6 +16,7 @@
     "material-ui": "^0.20.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-geolocated": "^3.0.1",
     "react-map-gl-geocoder": "^2.0.11",
     "react-mapbox-gl": "^4.8.2",
     "react-native-gesture-handler": "^1.6.1",
@@ -28,7 +29,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "aws s3 sync build/ s3://map-app-frontend",
+    "deploy-qual": "aws s3 sync build/ s3://map-app-frontend",
+    "deploy-prod": "aws s3 sync build/ s3://sidewaukee.com",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

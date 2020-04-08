@@ -4,7 +4,8 @@ import ReactMapboxGl, { Layer,
                         Feature,
                         ZoomControl,
                         GeoJSONLayer,
-                        Marker } from 'react-mapbox-gl';
+                        Marker,
+                        Popup } from 'react-mapbox-gl';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
 import InSituDialog from './InSituDialog.js';
@@ -12,7 +13,8 @@ import Legend from './Legend.js';
 import SidewaukeeLogo from './logo_rectangle.png';
 import { Button } from '@material-ui/core';
 import AboutIcon from '@material-ui/icons/InfoOutlined';
-
+import ContributeIcon from './contribute_icon.svg';
+import InSituIcon from './in_situ_icon.svg';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -25,10 +27,10 @@ if (process.env.NODE_ENV=="production")
 }
 
 const predsApi = API_URL + "/api/predictions";
-
+const inSituResultsApi = API_URL + "/api/getInSitu";
 
 const MILWAUKEE_CENTER = [-87.9065, 43.0389];
-const MILWAUKEE_BOUNDS = [[-89, 42],[-87, 44]];
+const MILWAUKEE_BOUNDS = [[-89, 42.5],[-87, 44]];
 
 const MapBoxMap = ReactMapboxGl({
   //todo: hide this token in a config
@@ -41,25 +43,64 @@ class MapContainer extends React.Component {
     super(props);
     this.state = { zoom: 15,
                    center: MILWAUKEE_CENTER,
-                   geoJson: {"missing_sidewalk": [],
-                             "sidewalk_issues": [],
-                             "passable_sidewalks": []},
                    missingCurbRamps: [],
-                   noncity: [],
                    searchInput: "",
-                   inSituSelection: null,
-                   SidewaukeeLogo};
+                   SidewaukeeLogo,
+                   inSituFeedback: [],
+                   popup: null};
   }
 
   componentDidMount() {
-    var req = predsApi + "?lat1=" + MILWAUKEE_BOUNDS[0][1] + "&long1=" + MILWAUKEE_BOUNDS[0][0]
-               + "&lat2=" + MILWAUKEE_BOUNDS[1][1] + "&long2=" + MILWAUKEE_BOUNDS[1][0];
-
     axios.get('./missing_curb_ramps.geojson')
     .then(res =>{
       this.setState({ missingCurbRamps: res.data.features});
     }
     )
+
+    var req = inSituResultsApi;
+    axios.get(req)
+         .then(res => {
+           this.setState({ inSituFeedback: res.data.in_situ_results});
+         })
+  }
+
+  renderGeolocation() {
+    if (this.props.isGeolocationAvailable &&
+        this.props.isGeolocationEnabled &&
+        this.props.coords) {
+      return (<Layer type="circle" paint={{"circle-radius": 6, "circle-color": "#1E90FF", "circle-stroke-width": 1, "circle-stroke-color": "white"}}>
+                 <Feature coordinates={[this.props.coords.longitude, this.props.coords.latitude]} />
+              </Layer>)
+    }
+  }
+
+  translateInSituLabel = (l) => {
+    if (l=='surfaceIrregularity'){
+      return "Surface Irregularity"
+    } else if (l=='construction'){
+      return "Construction"
+    } else if (l=="snowIce"){
+      return "Snow or Ice"
+    }
+      else if (l=="missingCurbRamp"){
+        return "Missing Curb Ramp"
+      } else if (l=="puddles"){
+        return "Puddles"
+      } else if (l=="normal"){
+        return "Normal"
+      }
+  }
+
+  renderPopup(){
+    if (this.state.popup != null){
+      const label = this.translateInSituLabel(this.state.popup.label);
+      return (<Popup
+                coordinates={this.state.popup.location}>
+                <p>{label}</p>
+              </Popup>)
+    } else {
+      return null
+    }
   }
 
   handleMove = (m) => {
@@ -79,14 +120,12 @@ class MapContainer extends React.Component {
   handleInSituSelection = (map, e) => {
     if (this.props.showInSituDialog){
       var lat_long = [e.lngLat.lng, e.lngLat.lat]
-      this.setState({inSituSelection: lat_long,
-                     center: lat_long})
+      this.props.setInSituSelection(lat_long);
     }
   }
 
-  handleInSituFlowEnd = () => {
-    setTimeout(this.props.setShowInSituDialog(false), 5000);
-    this.setState({inSituSelection: null});
+  handleInSituHover = (f) => {
+    this.setState({popup: f});
   }
 
   onMapLoad = (map) => {
@@ -102,12 +141,19 @@ class MapContainer extends React.Component {
   };
 
   render() {
+    const contributeImage = new Image();
+    contributeImage.src = ContributeIcon;
+    const inSituDisplayImage = new Image();
+    inSituDisplayImage.src = InSituIcon;
 
+    const images = ["contributeImage", contributeImage,
+                    "inSituDisplayImage", inSituDisplayImage];
+    const inSituImages = ["inSituDisImage", inSituDisplayImage];
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
             containerStyle={{
-              height: '90vh',
-              width: '98vw'
+              height: '80vh',
+              width: '96vw'
             }}
             center={this.state.center}
             zoom={[this.state.zoom]}
@@ -133,61 +179,28 @@ class MapContainer extends React.Component {
                  ))
                }
                </ Layer>
-               <Layer type="circle" paint={{"circle-radius": 4, "circle-color": "purple"}}>
-                  {this.state.inSituSelection ? <Feature coordinates={this.state.inSituSelection} /> : null}
+               <Layer type="symbol"
+                      layout={{ "icon-image": "contributeImage", "icon-allow-overlap": true }}
+                      images={images}>
+                  {this.props.inSituSelection ? <Feature coordinates={this.props.inSituSelection} /> : null}
                </Layer>
-               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.state.inSituSelection} handleInSituFlowEnd={this.handleInSituFlowEnd}/> : null }
-               {this.props.showLegend ? <Legend api_url={API_URL} setShowLegend={this.props.setShowLegend}/> : null }
-               
+               <Layer type="symbol"
+                      layout={{ "icon-image": "inSituDisImage", "icon-allow-overlap": true }}
+                      images={inSituImages}>
+                  {this.state.inSituFeedback.map((f) => (
+                    <Feature data-tip={f.label} coordinates={f.location} onMouseEnter={() => this.handleInSituHover(f)} onMouseLeave={() => this.setState({popup: null})} />
+                  ))}
+               </Layer>
+               {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.props.inSituSelection} handleInSituStatusChange={this.props.handleInSituStatusChange}/> : null }
+               {this.renderGeolocation()}
+               {this.props.showLegend ? <Legend api_url={API_URL} handleLegendClick={this.props.handleLegendClick}/> : null }
+               {this.renderPopup()}
                <Button size="large">
                   <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" />
                </Button>
-               
+
             </MapBoxMap>)
 
-              // <Layer type="line"
-              //         id="passable_sidewalks"
-              //         paint={{"line-width": 3, "line-color": '#B7B1AE'}}
-              //         before="poi_label">
-              //  {
-              //    //TODO: add key=id once the features have unique ids
-              //    this.state.geoJson.passable_sidewalks.map((f) => (
-              //      <Feature coordinates={f.geometry.coordinates} />
-              //    ))
-              //  }
-              //  </Layer>
-              // <Layer type="line"
-              //         id="missing_sidewalk"
-              //         paint={{"line-width": 3, "line-color": '#FF0000'}}
-              //         before="poi_label">
-              //  {
-              //    //TODO: add key=id once the features have unique ids
-              //    this.state.geoJson.missing_sidewalk.map((f) => (
-              //      <Feature coordinates={f.geometry.coordinates} />
-              //    ))
-              //  }
-              //  </Layer>
-              //  <Layer type="line"
-              //         id="sidewalk_issues"
-              //         paint={{"line-width": 3, "line-color": '#FFFF00'}}
-              //         before="poi_label">
-              //  {
-              //    //TODO: add key=id once the features have unique ids
-              //    this.state.geoJson.sidewalk_issues.map((f) => (
-              //      <Feature coordinates={f.geometry.coordinates} />
-              //    ))
-              //  }
-              //  </Layer>
-              //  <Layer type="fill"
-              //         id="noncity"
-              //         paint={{"fill-color": "#808080", "fill-opacity": .5}}
-              //         before="poi_label">
-              //    {
-              //      this.state.noncity.map((f) => (
-              //        <Feature coordinates={f.geometry.coordinates} />
-              //      ))
-              //    }
-              //  </Layer>
   }
 }
 

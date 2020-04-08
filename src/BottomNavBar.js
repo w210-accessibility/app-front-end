@@ -24,7 +24,7 @@ export default function BottomNavBar(props) {
   const [value, setValue] = React.useState(0);
   const [anchorEl1, setAnchorEl1] = React.useState(null);
   const [anchorEl2, setAnchorEl2] = React.useState(null);
-    
+
   const handleClose1 = () => {
     setAnchorEl1(null);
   };
@@ -42,14 +42,14 @@ export default function BottomNavBar(props) {
   };
 
   function handleContributeClick(){
-    props.setShowInSituDialog(true);
+    props.handleInSituStatusChange();
   }
 
   function handleLegendClick(){
-    props.setShowLegend(true);
+    props.handleLegendClick();
   }
 
-  
+
   return (
     <BottomNavigation
       value={value}
@@ -59,11 +59,11 @@ export default function BottomNavBar(props) {
       showLabels
       className={classes.root}
     >
-     
+
       <BottomNavigationAction label="Legend" icon={<LegendIcon />} onClick={handleLegendClick}/>
       <BottomNavigationAction label="Contribute" icon={<AddContentIcon />} onClick={handleContributeClick} />
-      <BottomNavigationAction label="Other Apps" 
-                              icon={<AppsIcon />} 
+      <BottomNavigationAction label="Other Apps"
+                              icon={<AppsIcon />}
                               onClick={handleClick1}  />
                                 <Menu
                                 id="appsmenu"
@@ -78,44 +78,44 @@ export default function BottomNavBar(props) {
                                   horizontal: 'center',
                                 }}
                                 open={Boolean(anchorEl1)}
-                                onClose={handleClose1} 
+                                onClose={handleClose1}
                                 TransitionComponent={Fade}
                                 >
                                   <MenuItem onClick={handleClose1
-                                  }> 
-                                    <Link href="https://wheelmap.org/" target="_blank" rel="noopener"> 
+                                  }>
+                                    <Link href="https://wheelmap.org/" target="_blank" rel="noopener">
                                       <b>Wheelmap</b><br></br><i>Find wheelchair accessible places</i>
                                     </Link>
                                   </MenuItem>
-                                  <MenuItem onClick={handleClose1}> 
-                                    <Link href="https://city.milwaukee.gov/ucc#.XoJl64g3mMp" target="_blank" rel="noopener"> 
+                                  <MenuItem onClick={handleClose1}>
+                                    <Link href="https://city.milwaukee.gov/ucc#.XoJl64g3mMp" target="_blank" rel="noopener">
                                       <b>311 Milwaukee</b><br></br><i>Milwaukee Unified Call Center</i>
                                     </Link>
                                   </MenuItem>
-                                  <MenuItem onClick={handleClose1}> 
-                                    <Link href="https://www.visitmilwaukee.org/plan-a-visit/getting-here-and-around/accessibility-in-milwaukee-for-disabled-travelers/" target="_blank" rel="noopener"> 
+                                  <MenuItem onClick={handleClose1}>
+                                    <Link href="https://www.visitmilwaukee.org/plan-a-visit/getting-here-and-around/accessibility-in-milwaukee-for-disabled-travelers/" target="_blank" rel="noopener">
                                       <b>Visit Milwaukee</b><br></br> <i>Visitor's guide</i>
                                     </Link>
                                   </MenuItem>
-                                  <MenuItem onClick={handleClose1}> 
-                                    <Link href="https://www.ridemcts.com/rider-information/accessibility" target="_blank" rel="noopener"> 
-                                      <b>MCTS</b><br></br><i>Milwaukee County Transit System</i> 
+                                  <MenuItem onClick={handleClose1}>
+                                    <Link href="https://www.ridemcts.com/rider-information/accessibility" target="_blank" rel="noopener">
+                                      <b>MCTS</b><br></br><i>Milwaukee County Transit System</i>
                                     </Link>
                                   </MenuItem>
-                                  <MenuItem onClick={handleClose1}> 
-                                    <Link href="http://www.parkmilwaukee.com/" target="_blank" rel="noopener"> 
-                                      <b>Park Milwaukee</b><br></br><i>Your downtown parking resource</i> 
+                                  <MenuItem onClick={handleClose1}>
+                                    <Link href="http://www.parkmilwaukee.com/" target="_blank" rel="noopener">
+                                      <b>Park Milwaukee</b><br></br><i>Your downtown parking resource</i>
                                     </Link>
                                   </MenuItem>
-                                  <MenuItem onClick={handleClose1}> 
-                                    <Link href="https://www.parkingmobility.com/volunteer" target="_blank" rel="noopener"> 
-                                      <b>Parking Mobility</b><br></br><i>Report accessible parking abuse</i> 
+                                  <MenuItem onClick={handleClose1}>
+                                    <Link href="https://www.parkingmobility.com/volunteer" target="_blank" rel="noopener">
+                                      <b>Parking Mobility</b><br></br><i>Report accessible parking abuse</i>
                                     </Link>
                                   </MenuItem>
                                 </Menu>
-                              
-      <BottomNavigationAction label="About" 
-                              icon={<AboutIcon />} 
+
+      <BottomNavigationAction label="About"
+                              icon={<AboutIcon />}
                               onClick={handleClick2}  />
                               <Menu
                                 id="aboutmenu"
@@ -130,17 +130,17 @@ export default function BottomNavBar(props) {
                                   horizontal: 'center',
                                 }}
                                 open={Boolean(anchorEl2)}
-                                onClose={handleClose2} 
+                                onClose={handleClose2}
                                 TransitionComponent={Fade}
                               >
                                 <MenuItem onClick={handleClose2}>
-                                  <Link href="https://w210-accessibility.github.io/sidewaukee/" target="_blank" rel="noopener">
+                                  <Link href="https://www.ischool.berkeley.edu/projects/2020/sidewaukee-making-our-city-accessible" target="_blank" rel="noopener">
                                      <b>Sidewaukee Pages</b><br></br>
-                                     Learn more about our project from our github pages
+                                     Learn more about our project 
                                    </Link>
-                                </MenuItem>  
+                                </MenuItem>
                               </Menu>
-                              
-    </BottomNavigation>  
+
+    </BottomNavigation>
   );
 }
