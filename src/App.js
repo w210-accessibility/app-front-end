@@ -4,7 +4,6 @@ import MapContainer from './MapContainer.js';
 import MapContainerGeolocated from './MapContainerGeolocated.js';
 import BottomNavBar from './BottomNavBar.js';
 import TopAppBar from './TopAppBar';
-import {ReactComponent as Logo} from './logo_rectangle.png';
 
 function App() {
   const [showInSituDialog, setShowInSituDialog] = useState(false);
@@ -33,6 +32,7 @@ function App() {
 
   return (
     <div>
+      <TopAppBar />
       <MapContainerGeolocated handleInSituStatusChange={handleInSituStatusChange}
                               handleLegendClick={handleLegendClick}
                               showInSituDialog={showInSituDialog}
