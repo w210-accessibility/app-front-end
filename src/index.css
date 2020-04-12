@@ -25,6 +25,20 @@
   font-family: Helvetica Neue,Arial,Helvetica,sans-serif;
 }
 
+.Legend {
+  width: 200px;
+  background-color: #FFFFFF;
+  color: #333;
+  border-radius: 5px;
+  z-index: 2;
+  padding: 20px;
+  margin-top: 55px;
+  margin-left: 20px;
+  position: absolute;
+  float: right;
+  font-family: Helvetica Neue,Arial,Helvetica,sans-serif;
+}
+
 .HoverOver {
   width: 50px;
   background-color: #FFFFFF;

@@ -61,8 +61,8 @@ export default function BottomNavBar(props) {
     >
 
       <BottomNavigationAction label="Legend" icon={<LegendIcon />} onClick={handleLegendClick}/>
-      <BottomNavigationAction label="Contribute" icon={<AddContentIcon />} onClick={handleContributeClick} />
-      <BottomNavigationAction label="Other Apps"
+      <BottomNavigationAction label="Report" icon={<AddContentIcon />} onClick={handleContributeClick} />
+      <BottomNavigationAction label="Local Links"
                               icon={<AppsIcon />}
                               onClick={handleClick1}  />
                                 <Menu
@@ -81,12 +81,6 @@ export default function BottomNavBar(props) {
                                 onClose={handleClose1}
                                 TransitionComponent={Fade}
                                 >
-                                  <MenuItem onClick={handleClose1
-                                  }>
-                                    <Link href="https://wheelmap.org/" target="_blank" rel="noopener">
-                                      <b>Wheelmap</b><br></br><i>Find wheelchair accessible places</i>
-                                    </Link>
-                                  </MenuItem>
                                   <MenuItem onClick={handleClose1}>
                                     <Link href="https://city.milwaukee.gov/ucc#.XoJl64g3mMp" target="_blank" rel="noopener">
                                       <b>311 Milwaukee</b><br></br><i>Milwaukee Unified Call Center</i>
@@ -136,7 +130,7 @@ export default function BottomNavBar(props) {
                                 <MenuItem onClick={handleClose2}>
                                   <Link href="https://www.ischool.berkeley.edu/projects/2020/sidewaukee-making-our-city-accessible" target="_blank" rel="noopener">
                                      <b>Sidewaukee Pages</b><br></br>
-                                     Learn more about our project 
+                                     Learn more about our project
                                    </Link>
                                 </MenuItem>
                               </Menu>

@@ -5,7 +5,7 @@ import InSituForm from './InSituForm.js';
 
 function InSituDialog(props){
   const inSituApi = props.api_url + "/api/addInSitu/"
-  const [dialog, setDialog] = useState("Find a place on the map where you want to report an issue and click on the exact location:")
+  const [dialog, setDialog] = useState("Find a place on the map where you want to report an issue in the sidewalks or other pedestrian ways. Use the cursor to select the exact location.")
   const [showInSituForm, setShowInSituForm] = useState(false);
 
   function handleSubmit(checkedBoxes){
@@ -42,7 +42,7 @@ function InSituDialog(props){
   })
 
   return (<div className='InSituDialog'>
-            <h2>Report a Sidewalk Issue</h2>
+            <h2>Report Issues</h2>
             <button className="close" onClick={() => props.handleInSituStatusChange()}>&times;</button>
             <p>{dialog}</p>
             {showInSituForm ? <InSituForm handleSubmit={handleSubmit}/> : null}

@@ -10,7 +10,6 @@ import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
 import InSituDialog from './InSituDialog.js';
 import Legend from './Legend.js';
-import SidewaukeeLogo from './logo_rectangle.png';
 import { Button } from '@material-ui/core';
 import AboutIcon from '@material-ui/icons/InfoOutlined';
 import ContributeIcon from './contribute_icon.svg';
@@ -45,7 +44,6 @@ class MapContainer extends React.Component {
                    center: MILWAUKEE_CENTER,
                    missingCurbRamps: [],
                    searchInput: "",
-                   SidewaukeeLogo,
                    inSituFeedback: [],
                    popup: null};
   }
@@ -140,6 +138,14 @@ class MapContainer extends React.Component {
     map.addControl(geoCoder);
   };
 
+  handleOnRender = (map) => {
+    if (this.props.showInSituDialog){
+      map.getCanvas().style.cursor = 'cell';
+    } else {
+      map.getCanvas().style.cursor = 'grab';
+    }
+  }
+
   render() {
     const contributeImage = new Image();
     contributeImage.src = ContributeIcon;
@@ -150,10 +156,11 @@ class MapContainer extends React.Component {
                     "inSituDisplayImage", inSituDisplayImage];
     const inSituImages = ["inSituDisImage", inSituDisplayImage];
     return (<MapBoxMap
-            style="mapbox://styles/emilyrapport/ck83qhm2e2ipj1io7uzhvl8cb"
+            style="mapbox://styles/emilyrapport/ck8xdovap2plc1io6vwed7on5"
             containerStyle={{
               height: '80vh',
-              width: '96vw'
+              width: '96vw',
+              cursor: 'cell',
             }}
             center={this.state.center}
             zoom={[this.state.zoom]}
@@ -161,6 +168,7 @@ class MapContainer extends React.Component {
             onMoveEnd = {this.handleMove}
             onZoomEnd = {this.handleZoom}
             onClick = {this.handleInSituSelection}
+            onRender = {this.handleOnRender}
             onStyleLoad = {this.onMapLoad}>
               <ZoomControl position="bottom-right"/>
               <Layer type="circle"
@@ -195,9 +203,6 @@ class MapContainer extends React.Component {
                {this.renderGeolocation()}
                {this.props.showLegend ? <Legend api_url={API_URL} handleLegendClick={this.props.handleLegendClick}/> : null }
                {this.renderPopup()}
-               <Button size="large">
-                  <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="50" width="180" />
-               </Button>
 
             </MapBoxMap>)
 
