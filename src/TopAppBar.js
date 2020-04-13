@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import SidewaukeeLogo from './logo_rectangle.png';
+import SidewaukeeLogo from './Sidewaukee_no_tag.png';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-  
+
 }));
 
 export default function TopAppBar() {
@@ -24,9 +24,9 @@ export default function TopAppBar() {
       <AppBar position="static" elevation={0} color="transparent" >
         <Toolbar variant="dense">
           <Typography variant="h6" className={classes.title}>
-          <img src={SidewaukeeLogo} alt="Sidewaukee Logo"  />
-          </Typography>  
-        
+          <img src={SidewaukeeLogo} alt="Sidewaukee Logo" className="Logo" />
+          </Typography>
+
         </Toolbar>
       </AppBar>
     </div>
