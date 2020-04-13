@@ -24,7 +24,7 @@ export default function TopAppBar() {
       <AppBar position="static" elevation={0} color="transparent" >
         <Toolbar variant="dense">
           <Typography variant="h6" className={classes.title}>
-          <img src={SidewaukeeLogo} alt="Sidewaukee Logo" height="200px" height="59.47px" />
+          <img src={SidewaukeeLogo} alt="Sidewaukee Logo" className="Logo" />
           </Typography>
 
         </Toolbar>

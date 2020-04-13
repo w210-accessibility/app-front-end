@@ -89,12 +89,19 @@ class MapContainer extends React.Component {
       }
   }
 
+  translateDate = (d) => {
+    var date = new Date(d);
+    console.log(date);
+    return date.toDateString();
+  }
   renderPopup(){
     if (this.state.popup != null){
       const label = this.translateInSituLabel(this.state.popup.label);
+      const date = this.translateDate(this.state.popup.date);
       return (<Popup
                 coordinates={this.state.popup.location}>
                 <p>{label}</p>
+                <p>{date}</p>
               </Popup>)
     } else {
       return null
@@ -158,7 +165,7 @@ class MapContainer extends React.Component {
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck8xdovap2plc1io6vwed7on5"
             containerStyle={{
-              height: '80vh',
+              height: '74vh',
               width: '96vw',
               cursor: 'cell',
             }}
