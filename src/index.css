@@ -78,6 +78,11 @@
 #firstLegendItem {
   padding-top: 12px;
 }
+
+#UserReportLegendItem{
+   margin-left: 35px;  
+}
+
 #submit {
   margin-top: 10px;
   margin-left: 10px;

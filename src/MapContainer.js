@@ -14,6 +14,7 @@ import { Button } from '@material-ui/core';
 import AboutIcon from '@material-ui/icons/InfoOutlined';
 import ContributeIcon from './contribute_icon.svg';
 import InSituIcon from './in_situ_icon.svg';
+import MissingCurbRampIcon from './missing_curb_ramp.svg';
 
 //CHANGE locally if you want to hit production server Instead
 // TODO: change this to read froma config file
@@ -43,12 +44,19 @@ class MapContainer extends React.Component {
     this.state = { zoom: 15,
                    center: MILWAUKEE_CENTER,
                    missingCurbRamps: [],
+                   presentCurbRamps: [],
                    searchInput: "",
                    inSituFeedback: [],
                    popup: null};
   }
 
   componentDidMount() {
+    axios.get('./present_curb_ramps.geojson')
+    .then(res =>{
+      this.setState({ presentCurbRamps: res.data.features});
+    }
+    )
+
     axios.get('./missing_curb_ramps.geojson')
     .then(res =>{
       this.setState({ missingCurbRamps: res.data.features});
@@ -158,10 +166,13 @@ class MapContainer extends React.Component {
     contributeImage.src = ContributeIcon;
     const inSituDisplayImage = new Image();
     inSituDisplayImage.src = InSituIcon;
+    const missingCurbRampImage = new Image();
+    missingCurbRampImage.src = MissingCurbRampIcon;
 
-    const images = ["contributeImage", contributeImage,
-                    "inSituDisplayImage", inSituDisplayImage];
+    const images = ["contributeImage", contributeImage];
     const inSituImages = ["inSituDisImage", inSituDisplayImage];
+    const mcrImage = ["MCRImage", missingCurbRampImage]
+
     return (<MapBoxMap
             style="mapbox://styles/emilyrapport/ck8xdovap2plc1io6vwed7on5"
             containerStyle={{
@@ -179,7 +190,7 @@ class MapContainer extends React.Component {
             onStyleLoad = {this.onMapLoad}>
               <ZoomControl position="bottom-right"/>
               <Layer type="circle"
-                      id="missing_curb_ramp"
+                      id="present_curb_ramp"
                       paint={{"circle-radius": [
                         'interpolate',
                         ['linear'],
@@ -187,13 +198,23 @@ class MapContainer extends React.Component {
                         13, 2,
                         16, 5,
                       ],
-                      "circle-color": '#e01f1f'}}>
+                      "circle-color": '#00a86b'}}>
                {
-                 this.state.missingCurbRamps.map((f) => (
-                   <Feature coordinates={f.geometry.coordinates} />
+                 this.state.presentCurbRamps.map((f) => (
+                   <Feature coordinates={f.geometry.coordinates}/>
                  ))
                }
                </ Layer>
+               <Layer type="symbol"
+                       id="missing_curb_ramp"
+                       layout={{ "icon-image": "MCRImage", "icon-allow-overlap": true }}
+                       images={mcrImage}>
+                {
+                  this.state.missingCurbRamps.map((f) => (
+                    <Feature coordinates={f.geometry.coordinates}/>
+                  ))
+                }
+                </ Layer>
                <Layer type="symbol"
                       layout={{ "icon-image": "contributeImage", "icon-allow-overlap": true }}
                       images={images}>
