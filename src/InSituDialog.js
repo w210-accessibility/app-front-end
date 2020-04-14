@@ -10,7 +10,7 @@ function InSituDialog(props){
 
   function handleSubmit(checkedBoxes){
     setShowInSituForm(false);
-    setDialog("Thank you for submitting this issue.");
+    setDialog("Thank you for submitting this issue. A marker will appear next time you refresh the page.");
     const keys = Object.keys(checkedBoxes);
     keys.map((key) => {
       if (checkedBoxes[key]){

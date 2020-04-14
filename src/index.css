@@ -80,7 +80,7 @@
 }
 
 #UserReportLegendItem{
-   margin-left: 35px;  
+   margin-left: 35px;
 }
 
 #submit {
@@ -100,4 +100,10 @@
 @media(max-width:500px){
 .InSituDialog, .Legend {
   margin-top: 80px;
+}}
+
+@media(max-width:500px){
+.Logo {
+  width: 200px;
+  height: 31px;
 }}

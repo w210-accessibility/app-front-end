@@ -68,6 +68,7 @@ class MapContainer extends React.Component {
          .then(res => {
            this.setState({ inSituFeedback: res.data.in_situ_results});
          })
+
   }
 
   renderGeolocation() {
@@ -116,16 +117,6 @@ class MapContainer extends React.Component {
     }
   }
 
-  handleMove = (m) => {
-    // don't really need this but keeping it around as a reminder of what's in m
-    // var input = m._controls[2].inputString;
-    // if (input !== this.state.searchInput)
-    // {
-    //   this.setState({searchInput: input});
-    // }
-    // var a = 1;
-  }
-
   handleZoom = (m) => {
     this.setState({ zoom: m.getZoom()})
   }
@@ -161,16 +152,31 @@ class MapContainer extends React.Component {
     }
   }
 
+
+  renderInSitu(){
+    if (this.state.zoom > 13){
+      const inSituDisplayImage = new Image();
+      inSituDisplayImage.src = InSituIcon;
+      const inSituImages = ["inSituDisImage", inSituDisplayImage];
+      return (<Layer type="symbol"
+             layout={{ "icon-image": "inSituDisImage", "icon-allow-overlap": true }}
+             images={inSituImages}>
+         {this.state.inSituFeedback.map((f) => (
+           <Feature data-tip={f.label} coordinates={f.location} onMouseEnter={() => this.handleInSituHover(f)} onMouseLeave={() => this.setState({popup: null})} />
+         ))}
+      </Layer>);
+    } else {
+      return null;
+    }
+  }
+
   render() {
     const contributeImage = new Image();
     contributeImage.src = ContributeIcon;
-    const inSituDisplayImage = new Image();
-    inSituDisplayImage.src = InSituIcon;
     const missingCurbRampImage = new Image();
     missingCurbRampImage.src = MissingCurbRampIcon;
 
     const images = ["contributeImage", contributeImage];
-    const inSituImages = ["inSituDisImage", inSituDisplayImage];
     const mcrImage = ["MCRImage", missingCurbRampImage]
 
     return (<MapBoxMap
@@ -220,13 +226,7 @@ class MapContainer extends React.Component {
                       images={images}>
                   {this.props.inSituSelection ? <Feature coordinates={this.props.inSituSelection} /> : null}
                </Layer>
-               <Layer type="symbol"
-                      layout={{ "icon-image": "inSituDisImage", "icon-allow-overlap": true }}
-                      images={inSituImages}>
-                  {this.state.inSituFeedback.map((f) => (
-                    <Feature data-tip={f.label} coordinates={f.location} onMouseEnter={() => this.handleInSituHover(f)} onMouseLeave={() => this.setState({popup: null})} />
-                  ))}
-               </Layer>
+               {this.renderInSitu()}
                {this.props.showInSituDialog ? <InSituDialog api_url={API_URL} location={this.props.inSituSelection} handleInSituStatusChange={this.props.handleInSituStatusChange}/> : null }
                {this.renderGeolocation()}
                {this.props.showLegend ? <Legend api_url={API_URL} handleLegendClick={this.props.handleLegendClick}/> : null }
